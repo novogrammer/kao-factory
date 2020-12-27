@@ -1,38 +1,6 @@
-// server.js
-const fs = require('fs');
-const app =require('express')();
-const isHttps=false;
-let server = null;
-if(isHttps){
-  const options={
-    key: fs.readFileSync('cert/server-key.pem'),
-    cert: fs.readFileSync('cert/server-crt.pem'),
-  };
-  server = require('https').createServer(options,app);
-}else{
-  server = require('http').createServer(app);
-}
-const io = require('socket.io')(server);
-const next = require('next')
+require("@babel/register");
+require("./server");
+const ServerApp=require("./ServerApp.es").default;
 
-const dev = process.env.NODE_ENV !== 'production'
-const nextApp = next({ dev })
-const nextHandler = nextApp.getRequestHandler()
-const port = 3000;
+const serverApp=new ServerApp();
 
-io.on('connect',socket=>{
-  socket.emit('now',{
-    message:'zeit',
-  })
-});
-
-nextApp.prepare().then(() => {
-  app.get('*',(req,res)=>{
-    return nextHandler(req,res);
-  });
-
-  server.listen(port, (err) => {
-    if (err) throw err
-    console.log(`> Ready on ${isHttps?"https":"http"}://localhost:${port}`)
-  })
-})

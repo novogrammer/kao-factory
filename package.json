@@ -9,6 +9,8 @@
     "start": "NODE_ENV=production node server/index.js"
   },
   "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/register": "^7.12.10",
     "express": "^4.17.1",
     "next": "10.0.4",
     "react": "17.0.1",
