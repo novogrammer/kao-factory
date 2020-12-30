@@ -4,12 +4,15 @@ import CameraContext from "../context/CameraContext";
 export default class FactoryView extends React.Component{
   constructor(props){
     super(props);
+    this.dummyRef=React.createRef();
   }
   componentDidMount(){
     console.log("FactoryView#componentDidMount");
+    console.log(this.dummyRef.current.innerHTML);
   }
   componentDidUpdate(){
     console.log("FactoryView#componentDidUpdate");
+    console.log(this.dummyRef.current.innerHTML);
   }
   componentWillUnmount(){
     console.log("FactoryView#componentWillUnmount");
@@ -20,7 +23,7 @@ export default class FactoryView extends React.Component{
       <CameraContext.Consumer>
         {
           ({position})=>{
-            return (<div>FactoryView:{JSON.stringify(position)}</div>);
+            return (<div ref={this.dummyRef}>FactoryView:{JSON.stringify(position)}</div>);
           }
         }
       </CameraContext.Consumer>
