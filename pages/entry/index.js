@@ -1,4 +1,8 @@
+import Entry from "../../client/components/Entry";
+
 
 export default function EntryPage(){
-  return (<div>this is EntryPage</div>);
+  return (
+    <Entry></Entry>
+  );
 }

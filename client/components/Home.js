@@ -2,12 +2,12 @@ import Head from 'next/head'
 import styles from './Home.module.css'
 
 
-import {Component} from 'react'
+import React from 'react'
 
 import io from 'socket.io-client';
 
 
-export default class Home extends Component {
+export default class Home extends React.Component {
   constructor(props){
     super(props);
 
