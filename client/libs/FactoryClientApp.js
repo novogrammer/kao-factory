@@ -2,7 +2,7 @@
 import Stats from "stats-js";
 import * as animate from 'animate';
 
-export default class FactoryApp{
+export default class FactoryClientApp{
   constructor({view}){
     Object.assign(this,{
       view,

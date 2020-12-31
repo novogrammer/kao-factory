@@ -3,7 +3,7 @@ import styles from './Entry.module.scss'
 
 import CameraContext from "../context/CameraContext";
 
-import EntryApp from "../libs/EntryApp";
+import EntryClientApp from "../libs/EntryClientApp";
 
 export default class Entry extends React.Component{
   constructor(props){
@@ -15,7 +15,7 @@ export default class Entry extends React.Component{
     console.log("Entry#componentDidMount");
     const video=this.videoRef.current;
     const view=this.viewRef.current;
-    this.entryApp=new EntryApp({video,view});
+    this.entryApp=new EntryClientApp({video,view});
     await this.entryApp.setupPromise;
   }
   componentDidUpdate(){

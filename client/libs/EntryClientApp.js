@@ -2,7 +2,7 @@
 import Stats from "stats-js";
 import * as animate from 'animate';
 
-export default class EntryApp{
+export default class EntryClientApp{
   constructor({video,view}){
     Object.assign(this,{
       video,

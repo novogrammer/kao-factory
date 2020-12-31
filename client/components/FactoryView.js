@@ -3,7 +3,7 @@ import styles from './FactoryView.module.scss'
 
 import CameraContext from "../context/CameraContext";
 
-import FactoryApp from "../libs/FactoryApp";
+import FactoryClientApp from "../libs/FactoryClientApp";
 
 export default class FactoryView extends React.Component{
   static contextType=CameraContext;
@@ -16,7 +16,7 @@ export default class FactoryView extends React.Component{
     console.log("FactoryView#componentDidMount");
     console.log(this.dummyRef.current.innerHTML);
     const view=this.viewRef.current;
-    this.factoryApp=new FactoryApp({view});
+    this.factoryApp=new FactoryClientApp({view});
     await this.factoryApp.setupPromise;
   }
   componentDidUpdate(){
