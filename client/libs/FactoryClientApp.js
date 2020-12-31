@@ -1,9 +1,16 @@
+import {FPS_FACTORY} from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
 export default class FactoryClientApp extends ClientAppBase{
   constructor(params){
-    super(params);
+    const paramsForSuper=Object.assign(
+      {
+        fps:FPS_FACTORY,
+      },
+      params
+    );
+    super(paramsForSuper);
   }
   async setupAsync(params){
     const {view}=params;

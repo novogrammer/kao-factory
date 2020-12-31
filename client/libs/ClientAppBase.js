@@ -6,6 +6,11 @@ export default class ClientAppBase{
     this.setupPromise=this.setupAsync(params);
   }
   async setupAsync(params){
+    const {fps}=params;
+    Object.assign(this,{
+      fps,
+    });
+
     this.setupStats();
     this.setupEvents();
   }
@@ -28,7 +33,7 @@ export default class ClientAppBase{
     stats.dom.remove();
   }
   setupEvents(){
-    const {stats}=this;
+    const {stats,fps}=this;
     const onTickAsyncInternal=async ()=>{
       stats.begin();
       await this.onTickAsync();
@@ -48,7 +53,7 @@ export default class ClientAppBase{
       promise.then(()=>{
         animationState="ready";
       });
-    },60);
+    },fps);
 
   }
   destroyEvents(){

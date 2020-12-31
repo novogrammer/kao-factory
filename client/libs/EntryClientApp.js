@@ -1,10 +1,16 @@
-
+import {FPS_ENTRY} from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
 export default class EntryClientApp extends ClientAppBase{
   constructor(params){
-    super(params);
+    const paramsForSuper=Object.assign(
+      {
+        fps:FPS_ENTRY,
+      },
+      params
+    );
+    super(paramsForSuper);
   }
   async setupAsync(params){
     const {video,view}=params;
