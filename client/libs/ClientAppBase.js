@@ -3,7 +3,16 @@ import * as animate from 'animate';
 
 export default class ClientAppBase{
   constructor(params){
+    this.binds={};
     this.setupPromise=this.setupAsync(params);
+  }
+  getBind(methodName){
+    let bind=this.binds[methodName];
+    if(!bind){
+      bind=this[methodName].bind(this);
+      this.binds[methodName]=bind;
+    }
+    return bind;
   }
   async setupAsync(params){
     const {fps}=params;
