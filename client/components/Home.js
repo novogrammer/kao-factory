@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import styles from './Home.module.css'
+import styles from './Home.module.scss'
 
 
 import React from 'react'
