@@ -1,67 +1,26 @@
 
-import Stats from "stats-js";
-import * as animate from 'animate';
 
-export default class EntryClientApp{
-  constructor({video,view}){
+import ClientAppBase from "./ClientAppBase";
+
+export default class EntryClientApp extends ClientAppBase{
+  constructor(params){
+    super(params);
+  }
+  async setupAsync(params){
+    const {video,view}=params;
     Object.assign(this,{
       video,
       view,
     });
 
-    this.setupPromise=this.setupAsync();
-  }
-  async setupAsync(){
-    this.setupStats();
-
-    this.setupEvents();
+    //onTickなどもあるので最後にする。
+    //問題が起きれば実行順を数値で表すなどする。
+    await super.setupAsync(params);
   }
   async destroyAsync(){
     //setupが終わってからdestroy
     await this.setupPromise;
+    await super.destroyAsync();
 
-    this.destroyEvents();
-    this.destroyStats();
-
-    
-  }
-  setupStats(){
-    const stats=new Stats();
-    // stats.dom.id="Stats";
-    stats.dom.style.left="auto";
-    stats.dom.style.right="0";
-    document.body.appendChild(stats.dom);
-    this.stats=stats;
-  }
-  destroyStats(){
-    const {stats}=this;
-    stats.dom.remove();
-  }
-  setupEvents(){
-    let animationState="ready";
-    this.animation=animate(async ()=>{
-      if(animationState!="ready"){
-        // console.log("skip frame");
-        return;
-      }
-      animationState="executing";
-      //async call
-      let promise=this.onTickAsync();
-      promise.then(()=>{
-        animationState="ready";
-      });
-    },60);
-
-  }
-  destroyEvents(){
-    this.animation.pause();
-  }
-  async onTickAsync(){
-    const {stats}=this;
-    stats.begin();
-
-
-
-    stats.end();
   }
 }
