@@ -1,5 +1,6 @@
 import Stats from "stats-js";
 import * as animate from 'animate';
+import io from 'socket.io-client';
 
 export default class ClientAppBase{
   constructor(params){
@@ -21,12 +22,14 @@ export default class ClientAppBase{
     });
 
     this.setupStats();
+    this.setupSocketIo();
     this.setupEvents();
   }
   async destroyAsync(){
     //setupが終わってからdestroy
     await this.setupPromise;
     this.destroyEvents();
+    this.destroySocketIo();
     this.destroyStats();
   }
   setupStats(){
@@ -40,6 +43,18 @@ export default class ClientAppBase{
   destroyStats(){
     const {stats}=this;
     stats.dom.remove();
+  }
+  setupSocketIo(){
+    this.socket=io();
+    const {socket}=this;
+    socket.on("connect",this.getBind("onConnect"));
+    socket.on("disconnect",this.getBind("onDisconnect"));
+  }
+  destorySocketIo(){
+    const {socket}=this;
+    socket.off("disconnect",this.getBind("onDisconnect"));
+    socket.off("connect",this.getBind("onConnect"));
+    socket.close();
   }
   setupEvents(){
     const {stats,fps}=this;
@@ -70,5 +85,11 @@ export default class ClientAppBase{
   }
   async onTickAsync(){
   }
-
+  onConnect(){
+    console.log("EntryApp#onConnect");
+  }
+  onDisconnect(){
+    console.log("EntryApp#onDisconnect");
+    //DO NOTHING
+  }
 }

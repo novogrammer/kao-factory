@@ -12,6 +12,9 @@ export default class FactoryClientApp extends ClientAppBase{
     );
     super(paramsForSuper);
   }
+  /**
+   * @override
+   */
   async setupAsync(params){
     const {view}=params;
     Object.assign(this,{
@@ -22,10 +25,27 @@ export default class FactoryClientApp extends ClientAppBase{
     //問題が起きれば実行順を数値で表すなどする。
     await super.setupAsync(params);
   }
+  /**
+   * @override
+   */
   async destroyAsync(){
     //setupが終わってからdestroy
     await this.setupPromise;
     await super.destroyAsync();
 
+  }
+  /**
+   * @override
+   */
+  setupSocketIo(){
+    super.setupSocketIo();
+    const {socket}=this;
+  }
+  /**
+   * @override
+   */
+  destorySocketIo(){
+    const {socket}=this;
+    super.destorySocketIo();
   }
 }
