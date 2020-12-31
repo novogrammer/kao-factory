@@ -11,11 +11,12 @@ export default class Entry extends React.Component{
     this.videoRef=React.createRef();
     this.viewRef=React.createRef();
   }
-  componentDidMount(){
+  async componentDidMount(){
     console.log("Entry#componentDidMount");
     const video=this.videoRef.current;
     const view=this.viewRef.current;
     this.entryApp=new EntryApp({video,view});
+    await this.entryApp.setupPromise;
   }
   componentDidUpdate(){
     console.log("Entry#componentDidUpdate");

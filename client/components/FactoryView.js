@@ -12,11 +12,12 @@ export default class FactoryView extends React.Component{
     this.viewRef=React.createRef();
     this.dummyRef=React.createRef();
   }
-  componentDidMount(){
+  async componentDidMount(){
     console.log("FactoryView#componentDidMount");
     console.log(this.dummyRef.current.innerHTML);
     const view=this.viewRef.current;
     this.factoryApp=new FactoryApp({view});
+    await this.factoryApp.setupPromise;
   }
   componentDidUpdate(){
     console.log("FactoryView#componentDidUpdate");
