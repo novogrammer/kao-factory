@@ -6,6 +6,7 @@ import CameraContext from "../context/CameraContext";
 import FactoryApp from "../libs/FactoryApp";
 
 export default class FactoryView extends React.Component{
+  static contextType=CameraContext;
   constructor(props){
     super(props);
     this.viewRef=React.createRef();
@@ -27,22 +28,12 @@ export default class FactoryView extends React.Component{
   }
 
   render(){
+    const {position}=this.context;
     return (
-      <CameraContext.Consumer>
-        {
-          ({position})=>{
-            return (
-              <div className={styles["container"]}>
-                <canvas className={styles["view"]} ref={this.viewRef} playsInline />
-                <div ref={this.dummyRef}>FactoryView:{JSON.stringify(position)}</div>
-
-              </div>
-      
-
-            );
-          }
-        }
-      </CameraContext.Consumer>
+      <div className={styles["container"]}>
+        <canvas className={styles["view"]} ref={this.viewRef} playsInline />
+        <div ref={this.dummyRef}>FactoryView:{JSON.stringify(position)}</div>
+      </div>
     );
   }
 }
