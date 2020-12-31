@@ -1,5 +1,5 @@
 
-export default function DefaultLayout({children}){
+export default function DefaultLayout({ children }) {
   return (
     <>
       <main>{children}</main>

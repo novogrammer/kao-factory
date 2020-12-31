@@ -1,12 +1,12 @@
-import {FPS_FACTORY} from "../../common/constants";
+import { FPS_FACTORY } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
-export default class FactoryClientApp extends ClientAppBase{
-  constructor(params){
-    const paramsForSuper=Object.assign(
+export default class FactoryClientApp extends ClientAppBase {
+  constructor(params) {
+    const paramsForSuper = Object.assign(
       {
-        fps:FPS_FACTORY,
+        fps: FPS_FACTORY,
       },
       params
     );
@@ -15,9 +15,9 @@ export default class FactoryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  async setupAsync(params){
-    const {view}=params;
-    Object.assign(this,{
+  async setupAsync(params) {
+    const { view } = params;
+    Object.assign(this, {
       view,
     });
 
@@ -28,7 +28,7 @@ export default class FactoryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  async destroyAsync(){
+  async destroyAsync() {
     //setupが終わってからdestroy
     await this.setupPromise;
     await super.destroyAsync();
@@ -37,15 +37,15 @@ export default class FactoryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  setupSocketIo(){
+  setupSocketIo() {
     super.setupSocketIo();
-    const {socket}=this;
+    const { socket } = this;
   }
   /**
    * @override
    */
-  destorySocketIo(){
-    const {socket}=this;
+  destorySocketIo() {
+    const { socket } = this;
     super.destorySocketIo();
   }
 }

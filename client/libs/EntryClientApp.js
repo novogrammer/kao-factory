@@ -1,12 +1,12 @@
-import {FPS_ENTRY} from "../../common/constants";
+import { FPS_ENTRY } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
-export default class EntryClientApp extends ClientAppBase{
-  constructor(params){
-    const paramsForSuper=Object.assign(
+export default class EntryClientApp extends ClientAppBase {
+  constructor(params) {
+    const paramsForSuper = Object.assign(
       {
-        fps:FPS_ENTRY,
+        fps: FPS_ENTRY,
       },
       params
     );
@@ -15,9 +15,9 @@ export default class EntryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  async setupAsync(params){
-    const {video,view}=params;
-    Object.assign(this,{
+  async setupAsync(params) {
+    const { video, view } = params;
+    Object.assign(this, {
       video,
       view,
     });
@@ -29,7 +29,7 @@ export default class EntryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  async destroyAsync(){
+  async destroyAsync() {
     //setupが終わってからdestroy
     await this.setupPromise;
     await super.destroyAsync();
@@ -38,15 +38,15 @@ export default class EntryClientApp extends ClientAppBase{
   /**
    * @override
    */
-  setupSocketIo(){
+  setupSocketIo() {
     super.setupSocketIo();
-    const {socket}=this;
+    const { socket } = this;
   }
   /**
    * @override
    */
-  destorySocketIo(){
-    const {socket}=this;
+  destorySocketIo() {
+    const { socket } = this;
     super.destorySocketIo();
   }
 }

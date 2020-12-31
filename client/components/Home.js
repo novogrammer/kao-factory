@@ -8,58 +8,58 @@ import io from 'socket.io-client';
 
 
 export default class Home extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.state={
-      hello:'',
+    this.state = {
+      hello: '',
     };
   }
-  componentDidMount(){
+  componentDidMount() {
     this.socket = io();
-    this.socket.on('now',(data)=>{
+    this.socket.on('now', (data) => {
       this.setState({
-        hello:data.message,
+        hello: data.message,
       })
     })
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
 
   }
 
-  render(){
+  render() {
     return (
       <div className={styles.container}>
         <Head>
           <title>Create Next App</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
+
         <main className={styles.main}>
           <h1 className={styles.title}>
             Welcome to <a href="https://nextjs.org">Next.js!</a>
-            <br/>
+            <br />
             with Socket.io
-            <br/>
+            <br />
             hello:{this.state.hello}
           </h1>
-  
+
           <p className={styles.description}>
             Get started by editing{' '}
             <code className={styles.code}>pages/index.js</code>
           </p>
-  
+
           <div className={styles.grid}>
             <a href="https://nextjs.org/docs" className={styles.card}>
               <h3>Documentation &rarr;</h3>
               <p>Find in-depth information about Next.js features and API.</p>
             </a>
-  
+
             <a href="https://nextjs.org/learn" className={styles.card}>
               <h3>Learn &rarr;</h3>
               <p>Learn about Next.js in an interactive course with quizzes!</p>
             </a>
-  
+
             <a
               href="https://github.com/vercel/next.js/tree/master/examples"
               className={styles.card}
@@ -67,7 +67,7 @@ export default class Home extends React.Component {
               <h3>Examples &rarr;</h3>
               <p>Discover and deploy boilerplate example Next.js projects.</p>
             </a>
-  
+
             <a
               href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
               className={styles.card}
@@ -79,7 +79,7 @@ export default class Home extends React.Component {
             </a>
           </div>
         </main>
-  
+
         <footer className={styles.footer}>
           <a
             href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
@@ -92,6 +92,6 @@ export default class Home extends React.Component {
         </footer>
       </div>
     )
-  
+
   }
 }
