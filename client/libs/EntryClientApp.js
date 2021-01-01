@@ -14,7 +14,7 @@ import * as tfjsWebgl from '@tensorflow/tfjs-backend-webgl';
 
 import { TRIANGULATION } from "./triangulation";
 
-function drawPath(ctx, points, closePath) {
+function drawPath(viewCtx, points, closePath) {
   const region = new Path2D();
   region.moveTo(points[0][0], points[0][1]);
   for (let i = 1; i < points.length; i++) {
@@ -25,7 +25,7 @@ function drawPath(ctx, points, closePath) {
   if (closePath) {
     region.closePath();
   }
-  ctx.stroke(region);
+  viewCtx.stroke(region);
 }
 
 export default class EntryClientApp extends ClientAppBase {
@@ -99,13 +99,21 @@ export default class EntryClientApp extends ClientAppBase {
     video.play();
     view.width = VIDEO_SIZE;
     view.height = VIDEO_SIZE;
-    const ctx = view.getContext("2d");
-    ctx.translate(view.width, 0);
-    ctx.scale(-1, 1);
+    const viewCtx = view.getContext("2d");
+    viewCtx.translate(view.width, 0);
+    viewCtx.scale(-1, 1);
+
+    const videoImage = document.createElement('canvas');
+    videoImage.width = VIDEO_SIZE;
+    videoImage.height = VIDEO_SIZE;
+    const videoImageCtx = videoImage.getContext("2d");
+
 
     Object.assign(this, {
       stream,
-      ctx,
+      viewCtx,
+      videoImage,
+      videoImageCtx,
     });
   }
   async destroyCameraAsync() {
@@ -129,22 +137,30 @@ export default class EntryClientApp extends ClientAppBase {
     const {
       model,
       video,
+      videoImage,
+      videoImageCtx,
     } = this;
 
+    videoImageCtx.drawImage(
+      video,
+      0, 0, VIDEO_SIZE, VIDEO_SIZE,
+      0, 0, VIDEO_SIZE, VIDEO_SIZE
+    );
     const predictions = await model.estimateFaces({
-      input: video,
+      input: videoImage,
     });
 
     this.drawFaces(predictions);
   }
   drawFaces(predictions) {
     const {
-      ctx,
+      viewCtx,
       view,
-      video,
+      // video,
+      videoImage,
     } = this;
-    ctx.drawImage(
-      video,
+    viewCtx.drawImage(
+      videoImage,
       0, 0, VIDEO_SIZE, VIDEO_SIZE,
       0, 0, view.width, view.height
     );
@@ -152,10 +168,10 @@ export default class EntryClientApp extends ClientAppBase {
       const scaledKeypoints = predictions[i].scaledMesh;
       // const keypoints = predictions[i].mesh;
 
-      ctx.save();
-      ctx.fillStyle = '#32EEDB';
-      ctx.strokeStyle = '#32EEDB';
-      ctx.lineWidth = 0.5;
+      viewCtx.save();
+      viewCtx.fillStyle = '#32EEDB';
+      viewCtx.strokeStyle = '#32EEDB';
+      viewCtx.lineWidth = 0.5;
       for (let j = 0; j < TRIANGULATION.length; j += 3) {
         const points = [
           TRIANGULATION[j + 0],
@@ -163,9 +179,9 @@ export default class EntryClientApp extends ClientAppBase {
           TRIANGULATION[j + 2],
         ].map(index => scaledKeypoints[index]);
 
-        drawPath(ctx, points, true);
+        drawPath(viewCtx, points, true);
       }
-      ctx.restore();
+      viewCtx.restore();
     }
 
 
