@@ -121,8 +121,12 @@ export default class EntryClientApp extends ClientAppBase {
 
   }
   async setupModelAsync() {
+    const packageConfig = {
+      maxFaces: 1,
+    };
     const model = await faceLandmarksDetection.load(
-      faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
+      faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
+      packageConfig
     );
     Object.assign(this, {
       model,
@@ -164,9 +168,9 @@ export default class EntryClientApp extends ClientAppBase {
       0, 0, VIDEO_SIZE, VIDEO_SIZE,
       0, 0, view.width, view.height
     );
-    for (let i = 0; i < predictions.length; i++) {
-      const scaledKeypoints = predictions[i].scaledMesh;
-      // const keypoints = predictions[i].mesh;
+    if (0 < predictions.length) {
+      const prediction = predictions[0]
+      const scaledKeypoints = prediction.scaledMesh;
 
       viewCtx.save();
       viewCtx.fillStyle = '#32EEDB';
