@@ -1,4 +1,7 @@
-import { FPS_FACTORY } from "../../common/constants";
+import {
+  FPS_FACTORY,
+  ROOM_FACTORY,
+} from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
@@ -7,6 +10,7 @@ export default class FactoryClientApp extends ClientAppBase {
     const paramsForSuper = Object.assign(
       {
         fps: FPS_FACTORY,
+        room: ROOM_FACTORY,
       },
       params
     );

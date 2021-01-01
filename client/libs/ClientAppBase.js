@@ -16,9 +16,13 @@ export default class ClientAppBase {
     return bind;
   }
   async setupAsync(params) {
-    const { fps } = params;
+    const {
+      fps,
+      room,
+    } = params;
     Object.assign(this, {
       fps,
+      room,
     });
 
     this.setupStats();
@@ -45,7 +49,13 @@ export default class ClientAppBase {
     stats.dom.remove();
   }
   setupSocketIo() {
-    this.socket = io();
+    const { room } = this;
+    const options = {
+      query: {
+        room,
+      },
+    };
+    this.socket = io(options);
     const { socket } = this;
     socket.on("connect", this.getBind("onConnect"));
     socket.on("disconnect", this.getBind("onDisconnect"));

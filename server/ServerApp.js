@@ -5,6 +5,11 @@ import * as https from "https";
 import socketIo from "socket.io";
 import next from "next";
 
+import {
+  ROOM_ENTRY,
+  ROOM_FACTORY,
+} from "../common/constants";
+
 const isHttps = false;
 
 const serverKeyPath = 'cert/server-key.pem';
@@ -59,9 +64,40 @@ export default class ServerApp {
 
   }
   onConnect(socket) {
-    socket.emit('now', {
-      message: 'zeit',
+    console.log("ServerApp#onConnect");
+    const { handshake } = socket;
+    const { room } = handshake.query;
+
+
+    socket.on("disconnect", (reason) => {
+      console.log("disconnect reason:" + reason);
     });
+
+    switch (room) {
+      case ROOM_ENTRY:
+        this.setupEntryRoom(socket);
+        break;
+      case ROOM_FACTORY:
+        this.setupFactoryRoom(socket);
+        break;
+      default:
+        console.log("no room");
+        socket.emit('now', {
+          message: 'zeit',
+        });
+        break;
+    }
+
+  }
+  setupEntryRoom(socket) {
+    socket.join(ROOM_ENTRY);
+    console.log("join room:" + ROOM_ENTRY);
+
+  }
+  setupFactoryRoom(socket) {
+    socket.join(ROOM_FACTORY);
+    console.log("join room:" + ROOM_FACTORY);
+
   }
 }
 

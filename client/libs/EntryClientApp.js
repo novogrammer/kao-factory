@@ -1,5 +1,6 @@
 import {
   FPS_ENTRY,
+  ROOM_ENTRY,
   VIDEO_SIZE,
 } from "../../common/constants";
 
@@ -33,6 +34,7 @@ export default class EntryClientApp extends ClientAppBase {
     const paramsForSuper = Object.assign(
       {
         fps: FPS_ENTRY,
+        room: ROOM_ENTRY,
       },
       params
     );
