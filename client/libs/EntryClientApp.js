@@ -136,6 +136,9 @@ export default class EntryClientApp extends ClientAppBase {
   async destroyModelAsync() {
     //DO NOTHING
   }
+  /**
+   * @override
+   */
   async onTickAsync() {
     await super.onTickAsync();
     const {
