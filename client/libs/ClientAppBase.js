@@ -50,7 +50,7 @@ export default class ClientAppBase {
     socket.on("connect", this.getBind("onConnect"));
     socket.on("disconnect", this.getBind("onDisconnect"));
   }
-  destorySocketIo() {
+  destroySocketIo() {
     const { socket } = this;
     socket.off("disconnect", this.getBind("onDisconnect"));
     socket.off("connect", this.getBind("onConnect"));
@@ -84,6 +84,7 @@ export default class ClientAppBase {
     this.animation.pause();
   }
   async onTickAsync() {
+    //DO NOTHING
   }
   onConnect() {
     console.log("EntryApp#onConnect");
