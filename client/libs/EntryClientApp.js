@@ -120,6 +120,10 @@ export default class EntryClientApp extends ClientAppBase {
   }
   async destroyCameraAsync() {
     const { stream } = this;
+    const tracks = stream.getTracks();
+    for (const track of tracks) {
+      track.stop();
+    }
 
   }
   async setupModelAsync() {
