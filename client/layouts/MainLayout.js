@@ -8,7 +8,8 @@ export default function MainLayout({ children }) {
   const menuRef = React.useRef();
   React.useEffect(() => {
     // console.log("MainLayout useEffect");
-    const $menu = $(menuRef.current);
+    const menu = menuRef.current;
+    const $menu = $(menu);
 
     const onKeyDown = (event) => {
       switch (event.key) {
@@ -22,10 +23,15 @@ export default function MainLayout({ children }) {
           break;
       }
     }
+    const onClickMenu = (event) => {
+      $menu.slideUp();
+    }
     document.addEventListener("keydown", onKeyDown);
+    menu.addEventListener("click", onClickMenu);
     return () => {
       // console.log("MainLayout useEffect finalize");
       document.removeEventListener("keydown", onKeyDown);
+      menu.removeEventListener("click", onClickMenu);
     };
   });
   return (
