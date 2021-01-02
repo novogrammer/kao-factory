@@ -2,7 +2,6 @@ import React from 'react'
 import CameraContext from "../context/CameraContext";
 
 import FactoryView from "../components/FactoryView";
-import Link from 'next/link'
 
 export default class FactoryLayout extends React.Component {
   constructor(props) {
@@ -23,21 +22,6 @@ export default class FactoryLayout extends React.Component {
     const { position } = this.state;
     return (
       <CameraContext.Provider value={this.state}>
-        <Link href="/">
-          <a>home</a>
-        </Link>
-        <Link href="/factory/">
-          <a>FactoryOverView</a>
-        </Link>
-        <Link href="/factory/a/">
-          <a>FactoryA</a>
-        </Link>
-        <Link href="/factory/b/">
-          <a>FactoryB</a>
-        </Link>
-        <Link href="/factory/c/">
-          <a>FactoryC</a>
-        </Link>
 
         <div>FactoryLayout:{JSON.stringify(position)}</div>
         <FactoryView></FactoryView>

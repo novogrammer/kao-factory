@@ -1,6 +1,7 @@
-import '../client/styles/globals.css'
+import '../client/styles/globals.scss'
 import Head from "next/head";
 import DefaultLayout from "../client/layouts/DefaultLayout";
+import MainLayout from "../client/layouts/MainLayout";
 
 
 export default function App({ Component, pageProps }) {
@@ -11,9 +12,11 @@ export default function App({ Component, pageProps }) {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <MainLayout>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </MainLayout>
     </>
   );
 }
