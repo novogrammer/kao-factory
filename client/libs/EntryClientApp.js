@@ -44,10 +44,11 @@ export default class EntryClientApp extends ClientAppBase {
    * @override
    */
   async setupAsync(params) {
-    const { video, view } = params;
+    const { video, view, loading } = params;
     Object.assign(this, {
       video,
       view,
+      loading,
     });
     await this.setupModelAsync();
     await this.setupCameraAsync();
@@ -55,6 +56,7 @@ export default class EntryClientApp extends ClientAppBase {
     //onTickなどもあるので最後にする。
     //問題が起きれば実行順を数値で表すなどする。
     await super.setupAsync(params);
+    loading.style.display = "none";
   }
   /**
    * @override

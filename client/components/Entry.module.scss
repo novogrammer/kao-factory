@@ -3,11 +3,25 @@
 }
 
 .view {
-  display: block;
   // transform: scale(-1,1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
 }
 
 .video {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
   transform: scale(-1, 1);
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 60px;
+  color: #f0f;
 }

@@ -10,12 +10,14 @@ export default class Entry extends React.Component {
     super(props);
     this.videoRef = React.createRef();
     this.viewRef = React.createRef();
+    this.loadingRef = React.createRef();
   }
   async componentDidMount() {
     console.log("Entry#componentDidMount");
     const video = this.videoRef.current;
     const view = this.viewRef.current;
-    this.entryApp = new EntryClientApp({ video, view });
+    const loading = this.loadingRef.current;
+    this.entryApp = new EntryClientApp({ video, view, loading });
     await this.entryApp.setupPromise;
   }
   componentDidUpdate() {
@@ -31,6 +33,7 @@ export default class Entry extends React.Component {
       <div className={styles["container"]}>
         <video className={styles["video"]} ref={this.videoRef} playsInline />
         <canvas className={styles["view"]} ref={this.viewRef} playsInline />
+        <div className={styles["loading"]} ref={this.loadingRef}>LOADING...</div>
       </div>
     );
   }
