@@ -1,3 +1,6 @@
+import * as THREE from "three";
+
+export const IS_DEBUG = true;
 
 export const ROOM_ENTRY = "entry";
 export const ROOM_FACTORY = "factory";
@@ -13,6 +16,16 @@ export const JPEG_QUALITY = 9.5;
 export const INLET_FACES_QTY = 4;
 
 //const FOVY = 60;
+
+
+//[rad/s]
+export const CAR_ANGULAR_VELOCITY = THREE.MathUtils.degToRad(360);
+
+//[m/s]
+export const CAR_VELOCITY = 10;
+
+
+
 
 //entry -> server
 // {

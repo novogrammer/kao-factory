@@ -14,6 +14,10 @@ import {
   INLET_FACES_QTY,
 } from "../common/constants";
 
+// import OsakaGridNetwork from "./Network/OsakaGridNetwork";
+
+import OsakaSociety from "./Society/OsakaSociety";
+
 const isHttps = false;
 
 const serverKeyPath = 'cert/server-key.pem';
@@ -26,8 +30,8 @@ export default class ServerApp {
     this.faces = [];
     this.inletFaces = [];
     this.inletFaceNextIndex = 0;
+    this.society = new OsakaSociety();
     this.setupPromise = this.setupAsync();
-
   }
   async setupAsync() {
     const app = express();
@@ -51,6 +55,10 @@ export default class ServerApp {
       if (err) throw err
       console.log(`> Ready on ${isHttps ? "https" : "http"}://localhost:${port}`)
     });
+
+    setInterval(() => {
+      this.society.update(0.1);
+    }, 100);
   }
   setupSocketIo() {
     const { server } = this;
