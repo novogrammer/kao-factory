@@ -1,6 +1,7 @@
 import {
   FPS_FACTORY,
   ROOM_FACTORY,
+  EVENT_NOTIFY_NEW_FACE,
 } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
@@ -44,12 +45,18 @@ export default class FactoryClientApp extends ClientAppBase {
   setupSocketIo() {
     super.setupSocketIo();
     const { socket } = this;
+    socket.on(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
+
   }
   /**
    * @override
    */
   destorySocketIo() {
     const { socket } = this;
+    socket.off(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
     super.destorySocketIo();
+  }
+  onNotifyNewFace({ place, hash }) {
+    console.log(place, hash);
   }
 }

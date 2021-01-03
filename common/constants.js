@@ -8,4 +8,40 @@ export const FPS_FACTORY = 60;
 export const VIDEO_SIZE = 512;
 // export const VIDEO_SIZE = 256;
 
+export const JPEG_QUALITY = 9.5;
+
+export const INLET_FACES_QTY = 4;
+
 //const FOVY = 60;
+
+//entry -> server
+// {
+//   image: base64,
+//   prediction: AnnotatedPredictionValues,
+// }
+export const EVENT_NOTIFY_UPLOAD_FACE = "notify upload face";
+
+
+// server -> factory
+// {
+//   place: Integer,
+//   hash: String,
+// }
+export const EVENT_NOTIFY_NEW_FACE = "notify new face";
+
+// factory -> server
+// {
+//   hash: String,
+// }
+export const EVENT_REQUEST_FACE = "request face";
+
+
+// server -> factory
+// {
+//   hash: String,
+//   image: base64,
+//   prediction: AnnotatedPredictionValues,
+// }
+export const EVENT_RESPONSE_FACE = "response face";
+
+

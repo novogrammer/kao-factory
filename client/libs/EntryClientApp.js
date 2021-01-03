@@ -2,6 +2,8 @@ import {
   FPS_ENTRY,
   ROOM_ENTRY,
   VIDEO_SIZE,
+  EVENT_NOTIFY_UPLOAD_FACE,
+  JPEG_QUALITY,
 } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
@@ -45,6 +47,7 @@ export default class EntryClientApp extends ClientAppBase {
    */
   async setupAsync(params) {
     const { video, view, loading } = params;
+    this.needsSend = false;
     Object.assign(this, {
       video,
       view,
@@ -57,6 +60,8 @@ export default class EntryClientApp extends ClientAppBase {
     //問題が起きれば実行順を数値で表すなどする。
     await super.setupAsync(params);
     loading.style.display = "none";
+
+    view.addEventListener("click", this.getBind("onClickView"));
   }
   /**
    * @override
@@ -64,6 +69,8 @@ export default class EntryClientApp extends ClientAppBase {
   async destroyAsync() {
     //setupが終わってからdestroy
     await this.setupPromise;
+    const { view } = this;
+    view.removeEventListener("click", this.getBind("onClickView"));
     await super.destroyAsync();
     await this.destroyCameraAsync();
     await this.destroyModelAsync();
@@ -154,6 +161,7 @@ export default class EntryClientApp extends ClientAppBase {
       video,
       videoImage,
       videoImageCtx,
+      socket,
     } = this;
 
     videoImageCtx.drawImage(
@@ -164,6 +172,16 @@ export default class EntryClientApp extends ClientAppBase {
     const predictions = await model.estimateFaces({
       input: videoImage,
     });
+
+    if (this.needsSend && 0 < predictions.length) {
+      this.needsSend = false;
+      const image = videoImage.toDataURL("image/jpeg", JPEG_QUALITY);
+      const prediction = predictions[0];
+      socket.emit(EVENT_NOTIFY_UPLOAD_FACE, {
+        image,
+        prediction
+      });
+    }
 
     this.drawFaces(predictions);
   }
@@ -200,6 +218,12 @@ export default class EntryClientApp extends ClientAppBase {
     }
 
 
+
+  }
+  onClickView() {
+    // console.log("click");
+
+    this.needsSend = true;
 
   }
 }
