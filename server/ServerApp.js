@@ -6,15 +6,25 @@ import socketIo from "socket.io";
 import next from "next";
 import * as crypto from "crypto";
 
+import EventEmitter from 'events';
+
 import {
   ROOM_ENTRY,
   ROOM_FACTORY,
   EVENT_NOTIFY_UPLOAD_FACE,
   EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
+  EVENT_NOTIFY_CAR_TURN,
+  EVENT_NOTIFY_CAR_MOVE,
   INLET_FACES_QTY,
   FPS_SERVER,
 } from "../common/constants";
+
+import {
+  fromVector3ToObject,
+  fromQuaternionToObject,
+} from "../common/socket_io_converter";
+
 
 // import OsakaGridNetwork from "./Network/OsakaGridNetwork";
 
@@ -32,7 +42,7 @@ export default class ServerApp {
     this.faces = [];
     this.inletFaces = [];
     this.inletFaceNextIndex = 0;
-    this.society = new OsakaSociety();
+    this.emitter = new EventEmitter();
     this.setupPromise = this.setupAsync();
   }
   async setupAsync() {
@@ -56,6 +66,12 @@ export default class ServerApp {
     server.listen(port, (err) => {
       if (err) throw err
       console.log(`> Ready on ${isHttps ? "https" : "http"}://localhost:${port}`)
+    });
+
+    this.emitter.on(EVENT_NOTIFY_CAR_TURN, this.onNotifyCarTurn.bind(this));
+    this.emitter.on(EVENT_NOTIFY_CAR_MOVE, this.onNotifyCarMove.bind(this));
+    this.society = new OsakaSociety({
+      emitter: this.emitter,
     });
 
     setInterval(() => {
@@ -125,17 +141,8 @@ export default class ServerApp {
       });
       const cars = this.society.cars.map((car) => {
         const id = car.uuid;
-        const position = {
-          x: car.position.x,
-          y: car.position.y,
-          z: car.position.z,
-        };
-        const quaternion = {
-          x: car.quaternion.x,
-          y: car.quaternion.y,
-          z: car.quaternion.z,
-          w: car.quaternion.w,
-        };
+        const position = fromVector3ToObject(car.position);
+        const quaternion = fromQuaternionToObject(car.quaternion);
         return {
           id,
           position,
@@ -177,6 +184,14 @@ export default class ServerApp {
   }
   onTick() {
     this.society.update(1 / FPS_SERVER);
+  }
+  onNotifyCarTurn(params) {
+    //そのまま渡す
+    this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_CAR_TURN, params);
+  }
+  onNotifyCarMove(params) {
+    //そのまま渡す
+    this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_CAR_MOVE, params);
   }
 }
 

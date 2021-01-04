@@ -4,6 +4,8 @@ import {
   ROOM_FACTORY,
   EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
+  EVENT_NOTIFY_CAR_TURN,
+  EVENT_NOTIFY_CAR_MOVE,
 } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
@@ -57,6 +59,10 @@ export default class FactoryClientApp extends ClientAppBase {
 
     socket.on(EVENT_NOTIFY_INITIALIZE, this.getBind("onNotifyInitialize"))
 
+    socket.on(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
+    socket.on(EVENT_NOTIFY_CAR_MOVE, this.getBind("onNotifyCarMove"));
+
+
   }
   /**
    * @override
@@ -81,6 +87,14 @@ export default class FactoryClientApp extends ClientAppBase {
       scene.add(clientCar);
       clientCars.push(clientCar);
     }
+  }
+  onNotifyCarTurn({ id, duration, from, to }) {
+    const clientCar = this.findClientCar(id);
+    clientCar.turn({ duration, from, to });
+  }
+  onNotifyCarMove({ id, duration, from, to }) {
+    const clientCar = this.findClientCar(id);
+    clientCar.move({ duration, from, to });
   }
 
   setupThree() {
@@ -186,5 +200,9 @@ export default class FactoryClientApp extends ClientAppBase {
     } = this.three;
     renderer.render(scene, camera);
 
+  }
+  findClientCar(id) {
+    const { clientCars, scene } = this.three;
+    return clientCars.find((clientCar) => clientCar.userData.id == id);
   }
 }

@@ -1,11 +1,12 @@
 import * as THREE from "three";
 
 export default class SocietyBase {
-  constructor() {
+  constructor({ emitter }) {
     const cars = [];
     const sections = [];
     const commanders = [];
     Object.assign(this, {
+      emitter,
       cars,
       commanders,
       sections,

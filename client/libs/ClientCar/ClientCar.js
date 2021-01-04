@@ -3,6 +3,11 @@ import {
   makeCube,
 } from "../three_utils";
 
+import gsap from "gsap";
+
+
+// const UP_VECTOR = new THREE.Vector3(0, 1, 0);
+// const ZERO_VECTOR = new THREE.Vector3(0, 0, 0);
 
 export default class ClientCar extends THREE.Group {
   constructor(id) {
@@ -18,5 +23,50 @@ export default class ClientCar extends THREE.Group {
       id
     };
 
+  }
+  turn({ duration, from, to }) {
+    const rotationParams = {
+      progress: 0,
+      from: {
+        quaternion: new THREE.Quaternion().copy(from.quaternion),
+      },
+      to: {
+        quaternion: new THREE.Quaternion().copy(to.quaternion),
+      },
+    };
+    gsap.to(rotationParams, duration, {
+      progress: 1, onUpdate: () => {
+        THREE.Quaternion.slerp(
+          rotationParams.from.quaternion,
+          rotationParams.to.quaternion,
+          this.quaternion,
+          rotationParams.progress
+        );
+      }
+    });
+
+  }
+  move({ duration, from, to }) {
+    const positionParams = {
+      progress: 0,
+      from: {
+        position: new THREE.Vector3().copy(from.position),
+      },
+      to: {
+        position: new THREE.Vector3().copy(to.position),
+      },
+    };
+    const v = new THREE.Vector3();
+    gsap.to(positionParams, duration, {
+      progress: 1,
+      onUpdate: () => {
+        v.lerpVectors(
+          positionParams.from.position,
+          positionParams.to.position,
+          positionParams.progress
+        );
+        this.position.copy(v);
+      },
+    });
   }
 }

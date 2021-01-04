@@ -10,11 +10,11 @@ import RoundTripCommander from "../Commander/RoundTripCommander";
 import SocietyBase from "./SocietyBase";
 
 export default class OsakaSociety extends SocietyBase {
-  constructor() {
-    super();
+  constructor(params) {
+    super(params);
   }
   setup() {
-    const { cars, commanders } = this;
+    const { cars, commanders, emitter } = this;
 
     const grid = new OsakaGridNetwork(10, 10, 2);
     const allSections = grid.sections;
@@ -23,7 +23,7 @@ export default class OsakaSociety extends SocietyBase {
     for (let i = 0; i < 20; ++i) {
       if (i < allSections.length) {
         const section = allSections[i];
-        const car = new Car();
+        const car = new Car({ emitter });
         car.position.copy(section.position);
         section.enter(car);
         car.userData.section = section;

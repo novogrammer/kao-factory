@@ -27,6 +27,19 @@ export const CAR_VELOCITY = 10;
 
 
 
+// Vector3 = {
+//   x: Number,
+//   y: Number,
+//   z: Number,
+// }
+// Quaternion = {
+//   x: Number,
+//   y: Number,
+//   z: Number,
+//   w: Number,
+// }
+// base64 = String
+
 
 //entry -> server
 // {
@@ -66,22 +79,42 @@ export const EVENT_RESPONSE_FACE = "response face";
 //     place:Integer,
 //   }[],
 //   cars:{
-//     carId:String,
-//     position:{
-//       x:Number,
-//       y:Number,
-//       z:Number,
-//     },
-//     quaternion:{
-//       x:Number,
-//       y:Number,
-//       z:Number,
-//       w:Number,
-//     },
+//     id:String,
+//     position:Vector3,
+//     quaternion:Quaternion,
 //   }[],
 // }
 
 
 export const EVENT_NOTIFY_INITIALIZE = "notify initialize";
+
+
+
+// server -> factory
+// {
+//   id: String,
+//   duration: Number,
+//   from: {
+//     quaternion: Quaternion,
+//   },
+//   to: {
+//     quaternion: Quaternion,
+//   },
+// }
+export const EVENT_NOTIFY_CAR_TURN = "notify car turn";
+
+
+// server -> factory
+// {
+//   id: String,
+//   duration: Number,
+//   from: {
+//     position: Vector3,
+//   },
+//   to: {
+//     position: Vector3,
+//   },
+// }
+export const EVENT_NOTIFY_CAR_MOVE = "notify car move";
 
 

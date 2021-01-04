@@ -1,7 +1,16 @@
 import {
   CAR_ANGULAR_VELOCITY,
   CAR_VELOCITY,
+  EVENT_NOTIFY_CAR_TURN,
+  EVENT_NOTIFY_CAR_MOVE,
 } from "../../common/constants";
+
+import {
+  fromVector3ToObject,
+  fromQuaternionToObject,
+} from "../../common/socket_io_converter";
+
+
 import * as THREE from "three";
 
 import gsap from "gsap";
@@ -14,10 +23,11 @@ const CAR_MOVING_STATE_IDLE = "idle";
 const CAR_MOVING_STATE_BUSY = "busy";
 
 export default class Car extends THREE.Group {
-  constructor(section) {
+  constructor({ emitter }) {
     super();
     this.userData = {
-      section,
+      emitter,
+      section: null,
       sectionTo: null,
       driver: null,
       movingState: CAR_MOVING_STATE_IDLE,
@@ -41,7 +51,7 @@ export default class Car extends THREE.Group {
 
   }
   goNext(segment) {
-    const { section, movingState } = this.userData;
+    const { section, movingState, emitter } = this.userData;
     switch (movingState) {
       case CAR_MOVING_STATE_IDLE:
         {
@@ -52,6 +62,18 @@ export default class Car extends THREE.Group {
           this.userData.movingState = CAR_MOVING_STATE_BUSY;
           this.userData.sectionTo = neighbor;
           const tl = gsap.timeline();
+          let turnParamForEmit = {
+            id: this.uuid,
+            duration: null,
+            from: null,
+            to: null,
+          };
+          let moveParamForEmit = {
+            id: this.uuid,
+            duration: null,
+            from: null,
+            to: null,
+          };
           {
             const tangent = segment.getTangent(0);
             const targetRotation = new THREE.Matrix4().lookAt(
@@ -68,6 +90,13 @@ export default class Car extends THREE.Group {
             const angle = rotationParams.qFrom.angleTo(rotationParams.qTo);
             const duration = angle / CAR_ANGULAR_VELOCITY;
 
+            turnParamForEmit.from = {
+              quaternion: fromQuaternionToObject(rotationParams.qFrom),
+            };
+            turnParamForEmit.to = {
+              quaternion: fromQuaternionToObject(rotationParams.qTo),
+            }
+
             if (THREE.MathUtils.degToRad(45) < angle) {
               tl.to(rotationParams, duration, {
                 progress: 1, onUpdate: () => {
@@ -79,6 +108,10 @@ export default class Car extends THREE.Group {
                   );
                 }
               });
+              turnParamForEmit.duration = duration;
+            } else {
+              turnParamForEmit.duration = 0;
+
             }
           }
           {
@@ -87,6 +120,15 @@ export default class Car extends THREE.Group {
               progress: 0,
             };
             const rotationMatrix = new THREE.Matrix4();
+
+            moveParamForEmit.from = {
+              position: fromVector3ToObject(segment.from.position),
+            };
+            moveParamForEmit.to = {
+              position: fromVector3ToObject(segment.to.position),
+            };
+            moveParamForEmit.duration = duration;
+
             tl.to(positionParams, duration, {
               progress: 1,
               onUpdate: () => {
@@ -109,6 +151,12 @@ export default class Car extends THREE.Group {
             });
 
           }
+          emitter.emit(EVENT_NOTIFY_CAR_TURN, turnParamForEmit);
+          setTimeout(() => {
+            emitter.emit(EVENT_NOTIFY_CAR_MOVE, moveParamForEmit);
+          }, turnParamForEmit.duration * 1000);
+
+
           return true;
 
         }

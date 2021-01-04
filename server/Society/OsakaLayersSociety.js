@@ -10,11 +10,11 @@ import LineSegment from "../Segment/LineSegment";
 import SocietyBase from "./SocietyBase";
 
 export default class OsakaLayersSociety extends SocietyBase {
-  constructor() {
-    super();
+  constructor(params) {
+    super(params);
   }
   setup() {
-    const { cars, commanders } = this;
+    const { cars, commanders, emitter } = this;
 
     const grid1 = new OsakaGridNetwork(10, 10, 2);
     const grid2 = new OsakaGridNetwork(10, 10, 2);
@@ -47,7 +47,7 @@ export default class OsakaLayersSociety extends SocietyBase {
     for (let i = 0; i < 40; ++i) {
       if (i < allSections.length) {
         const section = allSections[i];
-        const car = new Car();
+        const car = new Car({ emitter });
         car.position.copy(section.position);
         section.enter(car);
         car.userData.section = section;
