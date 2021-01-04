@@ -12,6 +12,7 @@ import {
   EVENT_NOTIFY_UPLOAD_FACE,
   EVENT_NOTIFY_NEW_FACE,
   INLET_FACES_QTY,
+  FPS_SERVER,
 } from "../common/constants";
 
 // import OsakaGridNetwork from "./Network/OsakaGridNetwork";
@@ -57,8 +58,8 @@ export default class ServerApp {
     });
 
     setInterval(() => {
-      this.society.update(0.1);
-    }, 100);
+      this.onTick();
+    }, 1000 / FPS_SERVER);
   }
   setupSocketIo() {
     const { server } = this;
@@ -140,6 +141,9 @@ export default class ServerApp {
   makeMd5(str) {
     const md5 = crypto.createHash('md5');
     return md5.update(str, 'binary').digest('hex');
+  }
+  onTick() {
+    this.society.update(1 / FPS_SERVER);
   }
 }
 
