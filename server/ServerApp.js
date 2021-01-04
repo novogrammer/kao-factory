@@ -11,6 +11,7 @@ import {
   ROOM_FACTORY,
   EVENT_NOTIFY_UPLOAD_FACE,
   EVENT_NOTIFY_NEW_FACE,
+  EVENT_NOTIFY_INITIALIZE,
   INLET_FACES_QTY,
   FPS_SERVER,
 } from "../common/constants";
@@ -114,6 +115,38 @@ export default class ServerApp {
   setupFactoryRoom(socket) {
     socket.join(ROOM_FACTORY);
     console.log("join room:" + ROOM_FACTORY);
+    {
+      const faces = this.faces.map((face, place) => {
+        const { hash } = face;
+        return {
+          place,
+          hash,
+        };
+      });
+      const cars = this.society.cars.map((car) => {
+        const id = car.uuid;
+        const position = {
+          x: car.position.x,
+          y: car.position.y,
+          z: car.position.z,
+        };
+        const quaternion = {
+          x: car.quaternion.x,
+          y: car.quaternion.y,
+          z: car.quaternion.z,
+          w: car.quaternion.w,
+        };
+        return {
+          id,
+          position,
+          quaternion,
+        };
+      });
+      socket.emit(EVENT_NOTIFY_INITIALIZE, {
+        faces,
+        cars,
+      });
+    }
 
   }
   onNotifyUploadFace(socket, { image, prediction }) {

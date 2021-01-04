@@ -59,3 +59,29 @@ export const EVENT_REQUEST_FACE = "request face";
 export const EVENT_RESPONSE_FACE = "response face";
 
 
+// server -> factory
+// "notify initialize":{
+//   faces:{
+//     hash:String,
+//     place:Integer,
+//   }[],
+//   cars:{
+//     carId:String,
+//     position:{
+//       x:Number,
+//       y:Number,
+//       z:Number,
+//     },
+//     quaternion:{
+//       x:Number,
+//       y:Number,
+//       z:Number,
+//       w:Number,
+//     },
+//   }[],
+// }
+
+
+export const EVENT_NOTIFY_INITIALIZE = "notify initialize";
+
+

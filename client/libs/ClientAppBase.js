@@ -68,12 +68,16 @@ export default class ClientAppBase {
   }
   setupEvents() {
     const { stats, fps } = this;
+
+
+    window.addEventListener("resize", this.getBind("onResize"));
+
+
     const onTickAsyncInternal = async () => {
       stats.begin();
       await this.onTickAsync();
       stats.end();
     };
-
 
     let animationState = "ready";
     this.animation = animate(async () => {
@@ -92,6 +96,7 @@ export default class ClientAppBase {
   }
   destroyEvents() {
     this.animation.pause();
+    window.removeEventListener("resize", this.getBind("onResize"));
   }
   async onTickAsync() {
     //DO NOTHING
@@ -102,5 +107,9 @@ export default class ClientAppBase {
   onDisconnect() {
     console.log("EntryApp#onDisconnect");
     //DO NOTHING
+  }
+
+  onResize() {
+
   }
 }
