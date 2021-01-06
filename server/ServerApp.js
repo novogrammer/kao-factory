@@ -9,8 +9,11 @@ import * as crypto from "crypto";
 import EventEmitter from 'events';
 
 import {
+  ROOM_DEBUG,
   ROOM_ENTRY,
   ROOM_FACTORY,
+  EVENT_NOTIFY_LOAD_INLET_FACES,
+  EVENT_NOTIFY_SAVE_INLET_FACES,
   EVENT_NOTIFY_UPLOAD_FACE,
   EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
@@ -18,6 +21,8 @@ import {
   EVENT_NOTIFY_CAR_MOVE,
   INLET_FACES_QTY,
   FPS_SERVER,
+  FILEPATH_INLET_FACES_JSON,
+  FACES_DIR,
 } from "../common/constants";
 
 import {
@@ -106,6 +111,10 @@ export default class ServerApp {
     });
 
     switch (room) {
+      case ROOM_DEBUG:
+        console.log("debug!!!");
+        this.setupDebugRoom(socket);
+        break;
       case ROOM_ENTRY:
         this.setupEntryRoom(socket);
         break;
@@ -114,11 +123,17 @@ export default class ServerApp {
         break;
       default:
         console.log("no room");
-        socket.emit('now', {
-          message: 'zeit',
-        });
+        console.log(handshake);
         break;
     }
+
+  }
+  setupDebugRoom(socket) {
+    socket.join(ROOM_DEBUG);
+    console.log("join room:" + ROOM_DEBUG);
+
+    socket.on(EVENT_NOTIFY_LOAD_INLET_FACES, this.onNotifyLoadInletFaces.bind(this, socket));
+    socket.on(EVENT_NOTIFY_SAVE_INLET_FACES, this.onNotifySaveInletFaces.bind(this, socket));
 
   }
   setupEntryRoom(socket) {
@@ -178,6 +193,14 @@ export default class ServerApp {
     // console.log(image.length, j.length);
 
   }
+  onNotifyLoadInletFaces(socket) {
+    console.log("onNotifyLoadInletFaces");
+    this.loadInletFaces();
+  }
+  onNotifySaveInletFaces(socket) {
+    console.log("onNotifySaveInletFaces");
+    this.saveInletFaces();
+  }
   makeMd5(str) {
     const md5 = crypto.createHash('md5');
     return md5.update(str, 'binary').digest('hex');
@@ -192,6 +215,44 @@ export default class ServerApp {
   onNotifyCarMove(params) {
     //そのまま渡す
     this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_CAR_MOVE, params);
+  }
+  loadFace(hash) {
+    const faceFilepath = FACES_DIR + hash + ".json";
+    const face = JSON.parse(fs.readFileSync(faceFilepath, 'utf8'));
+    return face;
+  }
+  saveFace(face) {
+    const {
+      hash,
+    } = face;
+    const faceFilepath = FACES_DIR + hash + ".json";
+    fs.writeFileSync(faceFilepath, JSON.stringify(face));
+  }
+  loadInletFaces() {
+    const hashes = JSON.parse(fs.readFileSync(FILEPATH_INLET_FACES_JSON, 'utf8'));
+    for (let i = 0; i < INLET_FACES_QTY; ++i) {
+      const hash = hashes[i];
+      if (!hash) {
+        this.inletFaces[i] = null;
+      } else {
+        const face = this.loadFace(hash);
+        this.inletFaces[i] = face;
+      }
+    }
+
+  }
+  saveInletFaces() {
+    const hashes = [];
+    for (let i = 0; i < INLET_FACES_QTY; ++i) {
+      const inletFace = this.inletFaces[i];
+      if (inletFace) {
+        hashes.push(inletFace.hash);
+        this.saveFace(inletFace);
+      } else {
+        hashes.push(null);
+      }
+    }
+    fs.writeFileSync(FILEPATH_INLET_FACES_JSON, JSON.stringify(hashes));
   }
 }
 

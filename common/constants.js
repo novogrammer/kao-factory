@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 export const IS_DEBUG = true;
 
+export const ROOM_DEBUG = "debug";
 export const ROOM_ENTRY = "entry";
 export const ROOM_FACTORY = "factory";
 
@@ -26,6 +27,11 @@ export const CAR_ANGULAR_VELOCITY = THREE.MathUtils.degToRad(360);
 export const CAR_VELOCITY = 10;
 
 
+export const DATA_DIR = "data/";
+export const FILEPATH_INLET_FACES_JSON = DATA_DIR + "inletFaces.json";
+export const FACES_DIR = DATA_DIR + "faces/";
+
+
 
 // Vector3 = {
 //   x: Number,
@@ -39,6 +45,17 @@ export const CAR_VELOCITY = 10;
 //   w: Number,
 // }
 // base64 = String
+
+// debug -> server
+// "notify load inlet faces": {
+// }
+export const EVENT_NOTIFY_LOAD_INLET_FACES = "notify load inlet faces";
+
+// debug -> server
+// "notify save inlet faces": {
+// }
+export const EVENT_NOTIFY_SAVE_INLET_FACES = "notify save inlet faces";
+
 
 
 //entry -> server
