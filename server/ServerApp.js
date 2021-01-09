@@ -81,6 +81,12 @@ export default class ServerApp {
       emitter: this.emitter,
     });
 
+    try {
+      this.loadInletFaces();
+    } catch (error) {
+      console.error(error);
+    }
+
     setInterval(() => {
       this.onTick();
     }, 1000 / FPS_SERVER);
@@ -197,11 +203,19 @@ export default class ServerApp {
   }
   onNotifyLoadInletFaces(socket) {
     console.log("onNotifyLoadInletFaces");
-    this.loadInletFaces();
+    try {
+      this.loadInletFaces();
+    } catch (error) {
+      console.error(error);
+    }
   }
   onNotifySaveInletFaces(socket) {
     console.log("onNotifySaveInletFaces");
-    this.saveInletFaces();
+    try {
+      this.saveInletFaces();
+    } catch (error) {
+      console.error(error);
+    }
   }
   makeMd5(str) {
     const md5 = crypto.createHash('md5');
