@@ -14,6 +14,8 @@ import {
   ROOM_FACTORY,
   EVENT_NOTIFY_LOAD_INLET_FACES,
   EVENT_NOTIFY_SAVE_INLET_FACES,
+  EVENT_NOTIFY_DISPLAY_ERROR_LOG,
+  EVENT_NOTIFY_CLEAR_ERROR_LOG,
   EVENT_NOTIFY_UPLOAD_FACE,
   EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
@@ -207,6 +209,7 @@ export default class ServerApp {
   }
   onTick() {
     this.society.update(1 / FPS_SERVER);
+    // this.sendDisplayErrorLog({ text: "foo" })
   }
   onNotifyCarTurn(params) {
     //そのまま渡す
@@ -253,6 +256,15 @@ export default class ServerApp {
       }
     }
     fs.writeFileSync(FILEPATH_INLET_FACES_JSON, JSON.stringify(hashes));
+  }
+  sendDisplayErrorLog({ socket = null, text = "" } = {}) {
+    let target = socket || this.io;
+    target.emit(EVENT_NOTIFY_DISPLAY_ERROR_LOG, { text });
+  }
+  sendClearErrorLog({ socket = null } = {}) {
+    let target = socket || this.io;
+    target.emit(EVENT_NOTIFY_CLEAR_ERROR_LOG, {});
+
   }
 }
 

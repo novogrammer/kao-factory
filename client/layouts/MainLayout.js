@@ -4,12 +4,32 @@ import styles from './MainLayout.module.scss'
 
 import $ from "jquery";
 
+import LogTextContext from "../context/LogTextContext";
+
 export default function MainLayout({ children }) {
   const menuRef = React.useRef();
+  const [logText, setLogText] = React.useState("");
+
+  const logTextContext = {
+    addLogText: (text) => {
+      setLogText((prevLogText) => {
+        console.log(text);
+        return prevLogText + text + "\n";
+      });
+    },
+    clearLogText: () => {
+      setLogText((prevLogText) => {
+        return "";
+      });
+      console.log("clear");
+    },
+  };
+
   React.useEffect(() => {
     // console.log("MainLayout useEffect");
     const menu = menuRef.current;
     const $menu = $(menu);
+    // addLogText("b");
 
     const onKeyDown = (event) => {
       switch (event.key) {
@@ -73,7 +93,14 @@ export default function MainLayout({ children }) {
         </div>
 
       </header>
-      {children}
+      <LogTextContext.Provider value={logTextContext}>
+        {children}
+      </LogTextContext.Provider>
+      <footer>
+        <div className={styles["log-container"]}>
+          <p className={styles["log-text"]}>{logText}</p>
+        </div>
+      </footer>
     </>
   );
 }

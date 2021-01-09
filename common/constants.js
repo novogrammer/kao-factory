@@ -47,14 +47,26 @@ export const FACES_DIR = DATA_DIR + "faces/";
 // base64 = String
 
 // debug -> server
-// "notify load inlet faces": {
+// {
 // }
 export const EVENT_NOTIFY_LOAD_INLET_FACES = "notify load inlet faces";
 
 // debug -> server
-// "notify save inlet faces": {
+// {
 // }
 export const EVENT_NOTIFY_SAVE_INLET_FACES = "notify save inlet faces";
+
+
+// server -> any client
+// {
+//   text: String,
+// }
+export const EVENT_NOTIFY_DISPLAY_ERROR_LOG = "notify display error log";
+
+// server -> any client
+// {
+// }
+export const EVENT_NOTIFY_CLEAR_ERROR_LOG = "notify clear error log";
 
 
 
@@ -90,7 +102,7 @@ export const EVENT_RESPONSE_FACE = "response face";
 
 
 // server -> factory
-// "notify initialize":{
+// {
 //   faces:{
 //     hash:String,
 //     place:Integer,

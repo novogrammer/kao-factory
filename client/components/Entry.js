@@ -1,11 +1,12 @@
 import React from 'react'
 import styles from './Entry.module.scss'
 
-import CameraContext from "../context/CameraContext";
+import LogTextContext from "../context/LogTextContext";
 
 import EntryClientApp from "../libs/EntryClientApp";
 
 export default class Entry extends React.Component {
+  static contextType = LogTextContext;
   constructor(props) {
     super(props);
     this.videoRef = React.createRef();
@@ -17,7 +18,14 @@ export default class Entry extends React.Component {
     const video = this.videoRef.current;
     const view = this.viewRef.current;
     const loading = this.loadingRef.current;
-    this.entryApp = new EntryClientApp({ video, view, loading });
+    const { addLogText, clearLogText } = this.context;
+    this.entryApp = new EntryClientApp({
+      video,
+      view,
+      loading,
+      addLogText,
+      clearLogText,
+    });
     await this.entryApp.setupPromise;
   }
   componentDidUpdate() {

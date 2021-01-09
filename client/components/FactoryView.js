@@ -1,12 +1,12 @@
 import React from 'react'
 import styles from './FactoryView.module.scss'
 
-import CameraContext from "../context/CameraContext";
+import LogTextContext from "../context/LogTextContext";
 
 import FactoryClientApp from "../libs/FactoryClientApp";
 
 export default class FactoryView extends React.Component {
-  static contextType = CameraContext;
+  static contextType = LogTextContext;
   constructor(props) {
     super(props);
     this.viewRef = React.createRef();
@@ -16,7 +16,13 @@ export default class FactoryView extends React.Component {
     console.log("FactoryView#componentDidMount");
     console.log(this.dummyRef.current.innerHTML);
     const view = this.viewRef.current;
-    this.factoryApp = new FactoryClientApp({ view });
+    const { addLogText, clearLogText } = this.context;
+
+    this.factoryApp = new FactoryClientApp({
+      view,
+      addLogText,
+      clearLogText,
+    });
     await this.factoryApp.setupPromise;
   }
   componentDidUpdate() {
@@ -29,7 +35,7 @@ export default class FactoryView extends React.Component {
   }
 
   render() {
-    const { position } = this.context;
+    const { position } = this.props;
     return (
       <div className={styles["container"]}>
         <canvas className={styles["view"]} ref={this.viewRef} playsInline />

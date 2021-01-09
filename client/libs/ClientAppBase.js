@@ -1,3 +1,8 @@
+import {
+  EVENT_NOTIFY_DISPLAY_ERROR_LOG,
+  EVENT_NOTIFY_CLEAR_ERROR_LOG,
+} from "../../common/constants";
+
 import Stats from "stats-js";
 import * as animate from 'animate';
 import io from 'socket.io-client';
@@ -19,10 +24,14 @@ export default class ClientAppBase {
     const {
       fps,
       room,
+      addLogText = () => { },
+      clearLogText = () => { },
     } = params;
     Object.assign(this, {
       fps,
       room,
+      addLogText,
+      clearLogText,
     });
 
     this.setupStats();
@@ -59,6 +68,9 @@ export default class ClientAppBase {
     const { socket } = this;
     socket.on("connect", this.getBind("onConnect"));
     socket.on("disconnect", this.getBind("onDisconnect"));
+
+    socket.on(EVENT_NOTIFY_DISPLAY_ERROR_LOG, this.getBind("onNotifyDisplayErrorLog"));
+    socket.on(EVENT_NOTIFY_CLEAR_ERROR_LOG, this.getBind("onNotifyClearErrorLog"));
   }
   destroySocketIo() {
     const { socket } = this;
@@ -112,4 +124,13 @@ export default class ClientAppBase {
   onResize() {
 
   }
+  onNotifyDisplayErrorLog({ text }) {
+    console.log("onNotifyDisplayErrorLog text:" + text);
+    this.addLogText(text);
+  }
+  onNotifyClearErrorLog() {
+    console.log("onNotifyClearErrorLog");
+    this.clearLogText();
+  }
+
 }
