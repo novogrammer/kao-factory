@@ -107,15 +107,15 @@ export default class CommanderBase {
     return resultPath;
   }
   onStuck() {
-    console.log("onStuck");
+    // console.log("onStuck");
 
   }
   onComplete() {
-    console.log("onComplete");
+    // console.log("onComplete");
 
   }
   onTimeout() {
-    console.log("onTimeout");
+    // console.log("onTimeout");
 
   }
 
