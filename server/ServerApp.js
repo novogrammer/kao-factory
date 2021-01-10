@@ -21,6 +21,8 @@ import {
   EVENT_NOTIFY_INITIALIZE,
   EVENT_NOTIFY_CAR_TURN,
   EVENT_NOTIFY_CAR_MOVE,
+  EVENT_REQUEST_FACE,
+  EVENT_RESPONSE_FACE,
   INLET_FACES_QTY,
   FPS_SERVER,
   FILEPATH_INLET_FACES_JSON,
@@ -46,7 +48,7 @@ const dev = process.env.NODE_ENV !== 'production'
 
 export default class ServerApp {
   constructor() {
-    this.faces = [];
+    this.faces = {};
     this.inletFaces = [];
     this.inletFaceNextIndex = 0;
     this.emitter = new EventEmitter();
@@ -77,6 +79,7 @@ export default class ServerApp {
 
     this.emitter.on(EVENT_NOTIFY_CAR_TURN, this.onNotifyCarTurn.bind(this));
     this.emitter.on(EVENT_NOTIFY_CAR_MOVE, this.onNotifyCarMove.bind(this));
+
     this.society = new OsakaSociety({
       emitter: this.emitter,
     });
@@ -154,9 +157,13 @@ export default class ServerApp {
   setupFactoryRoom(socket) {
     socket.join(ROOM_FACTORY);
     console.log("join room:" + ROOM_FACTORY);
+
+
+    socket.on(EVENT_REQUEST_FACE, this.onRequestFace.bind(this, socket));
+
     {
-      const faces = this.faces.map((face, place) => {
-        const { hash } = face;
+      const inletFaces = this.inletFaces.map((inletFace, place) => {
+        const { hash } = inletFace;
         return {
           place,
           hash,
@@ -173,7 +180,7 @@ export default class ServerApp {
         };
       });
       socket.emit(EVENT_NOTIFY_INITIALIZE, {
-        faces,
+        inletFaces,
         cars,
       });
     }
@@ -186,7 +193,7 @@ export default class ServerApp {
       image,
       prediction,
     };
-    this.faces.push(face);
+    this.faces[hash] = face;
     const place = this.inletFaceNextIndex;
     this.inletFaces[place] = face;
     this.inletFaceNextIndex = (this.inletFaceNextIndex + 1) % INLET_FACES_QTY;
@@ -254,6 +261,7 @@ export default class ServerApp {
       } else {
         const face = this.loadFace(hash);
         this.inletFaces[i] = face;
+        this.faces[hash] = face;
       }
     }
 
@@ -279,6 +287,15 @@ export default class ServerApp {
     let target = socket || this.io;
     target.emit(EVENT_NOTIFY_CLEAR_ERROR_LOG, {});
 
+  }
+  onRequestFace(socket, { hash }) {
+    console.log("onRequestFace");
+    const face = this.faces[hash];
+    if (face) {
+      socket.emit(EVENT_RESPONSE_FACE, face);
+    } else {
+      console.log("onRequestFace face not found");
+    }
   }
 }
 

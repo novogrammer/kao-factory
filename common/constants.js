@@ -26,6 +26,9 @@ export const CAR_ANGULAR_VELOCITY = THREE.MathUtils.degToRad(360);
 //[m/s]
 export const CAR_VELOCITY = 10;
 
+export const Z_OFFSET_PART = 0.01;
+export const Z_OFFSET_MASK = 0.001;
+
 
 export const DATA_DIR = "data/";
 export const FILEPATH_INLET_FACES_JSON = DATA_DIR + "inletFaces.json";

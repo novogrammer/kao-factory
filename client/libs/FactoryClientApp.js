@@ -6,11 +6,21 @@ import {
   EVENT_NOTIFY_INITIALIZE,
   EVENT_NOTIFY_CAR_TURN,
   EVENT_NOTIFY_CAR_MOVE,
+  EVENT_REQUEST_FACE,
+  EVENT_RESPONSE_FACE,
 } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
 
 import ClientCar from "./ClientCar/ClientCar";
+
+import FaceResource from "./Face/FaceResource";
+
+import InletFace from "./Face/InletFace";
+
+import {
+  makeCube,
+} from "./three_utils";
 
 export default class FactoryClientApp extends ClientAppBase {
   constructor(params) {
@@ -28,8 +38,12 @@ export default class FactoryClientApp extends ClientAppBase {
    */
   async setupAsync(params) {
     const { view } = params;
+    const facePromiseAndResolveStore = {};
+    const faceResourcePromiseStore = {};
     Object.assign(this, {
       view,
+      facePromiseAndResolveStore,
+      faceResourcePromiseStore,
     });
 
     this.setupThree();
@@ -56,11 +70,12 @@ export default class FactoryClientApp extends ClientAppBase {
     super.setupSocketIo();
     const { socket } = this;
     socket.on(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
-
     socket.on(EVENT_NOTIFY_INITIALIZE, this.getBind("onNotifyInitialize"))
 
     socket.on(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
     socket.on(EVENT_NOTIFY_CAR_MOVE, this.getBind("onNotifyCarMove"));
+
+    socket.on(EVENT_RESPONSE_FACE, this.getBind("onResponseFace"));
 
 
   }
@@ -70,13 +85,21 @@ export default class FactoryClientApp extends ClientAppBase {
   destorySocketIo() {
     const { socket } = this;
     socket.off(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
+    socket.off(EVENT_NOTIFY_INITIALIZE, this.getBind("onNotifyInitialize"))
+
+    socket.off(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
+    socket.off(EVENT_NOTIFY_CAR_MOVE, this.getBind("onNotifyCarMove"));
+
+    socket.off(EVENT_RESPONSE_FACE, this.getBind("onResponseFace"));
+
     super.destorySocketIo();
   }
   onNotifyNewFace({ place, hash }) {
-    console.log(place, hash);
+    console.log("onNotifyNewFace", place, hash);
+    this.setupNewFace(place, hash);
   }
-  onNotifyInitialize({ faces, cars }) {
-    console.log(faces.length, cars.length);
+  onNotifyInitialize({ inletFaces, cars }) {
+    console.log("onNotifyInitialize", inletFaces.length, cars.length);
 
     const { clientCars, scene } = this.three;
     //再接続の時はゴミが残っている
@@ -84,6 +107,13 @@ export default class FactoryClientApp extends ClientAppBase {
       scene.remove(clientCar);
     }
     clientCars.length = 0;
+
+
+    for (let { place, hash } of inletFaces) {
+      this.setupNewFace(place, hash);
+    }
+
+
 
     for (let car of cars) {
       const clientCar = new ClientCar(car.id);
@@ -124,10 +154,11 @@ export default class FactoryClientApp extends ClientAppBase {
 
     // }
 
+
     const clientCars = [];
 
 
-    camera.position.z = 10;
+    camera.position.z = 20;
     camera.position.y = 20;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -144,12 +175,14 @@ export default class FactoryClientApp extends ClientAppBase {
 
     }
 
+    const inletFaces = [];
 
     this.three = {
       scene,
       camera,
       renderer,
       clientCars,
+      inletFaces,
     };
 
   }
@@ -209,5 +242,60 @@ export default class FactoryClientApp extends ClientAppBase {
   findClientCar(id) {
     const { clientCars, scene } = this.three;
     return clientCars.find((clientCar) => clientCar.userData.id == id);
+  }
+  getFaceAsync(hash) {
+    const { socket } = this;
+    let facePromiseAndResolve = this.facePromiseAndResolveStore[hash];
+    if (!facePromiseAndResolve) {
+      facePromiseAndResolve = {};
+      facePromiseAndResolve.promise = new Promise((resolve) => {
+        facePromiseAndResolve.resolve = resolve;
+      });
+      this.facePromiseAndResolveStore[hash] = facePromiseAndResolve;
+
+      socket.emit(EVENT_REQUEST_FACE, {
+        hash,
+      });
+
+    }
+    return facePromiseAndResolve.promise;
+  }
+  getFaceResourceAsync(hash) {
+    let faceResourcePromise = this.faceResourcePromiseStore[hash];
+    if (!faceResourcePromise) {
+      faceResourcePromise = new Promise((resolve) => {
+        this.getFaceAsync(hash).then((face) => {
+          resolve(new FaceResource(face));
+        });
+      });
+      ;
+      this.faceResourcePromiseStore[hash] = faceResourcePromise;
+    }
+    return faceResourcePromise;
+
+  }
+  onResponseFace(face) {
+    const { hash } = face;
+    console.log("onResponseFace", hash);
+    let facePromiseAndResolve = this.facePromiseAndResolveStore[hash];
+    facePromiseAndResolve.resolve(face);
+  }
+  setupNewFace(place, hash) {
+    const { inletFaces, scene } = this.three;
+
+    const faceResourcePromise = this.getFaceResourceAsync(hash);
+
+    faceResourcePromise.then((faceResource) => {
+      const prevInletFace = inletFaces[place];
+      if (prevInletFace) {
+        scene.remove(prevInletFace);
+      }
+      const inletFace = new InletFace({ faceResource });
+      inletFace.position.x = place * 4;
+
+      inletFaces[place] = inletFace;
+      scene.add(inletFace);
+
+    });
   }
 }
