@@ -79,6 +79,11 @@ export default class FactoryClientApp extends ClientAppBase {
     console.log(faces.length, cars.length);
 
     const { clientCars, scene } = this.three;
+    //再接続の時はゴミが残っている
+    for (let clientCar of clientCars) {
+      scene.remove(clientCar);
+    }
+    clientCars.length = 0;
 
     for (let car of cars) {
       const clientCar = new ClientCar(car.id);
