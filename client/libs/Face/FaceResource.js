@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import {
   VIDEO_SIZE,
+  FACE_HEIGHT,
+  FACE_INDEX_NOSE_TIP,
+  FACE_INDEX_FACE_TOP,
+  FACE_INDEX_FACE_BOTTOM,
 } from "../../../common/constants";
 import {
   leftEyeFaces,
@@ -60,16 +64,37 @@ export default class FaceResource {
       geometry.faceVertexUvs[0].push(uvList);
 
     }
-    geometry.translate(VIDEO_SIZE * -0.5, VIDEO_SIZE * -0.5, 0);
-    //すでに右手座標系になっている。X軸180度回転
-    geometry.scale(1, -1, -1);
-    geometry.scale(0.01, 0.01, 0.01);
+    {
+      // geometry.translate(VIDEO_SIZE * -0.5, VIDEO_SIZE * -0.5, 0);
+      //すでに右手座標系になっている。X軸180度回転
+      const scaleForRotateX180 = new THREE.Vector3(1, -1, -1);
+      geometry.scale(...scaleForRotateX180.toArray());
+      const originalFaceTopPosition = new THREE.Vector3(...scaledKeypoints[FACE_INDEX_FACE_TOP]).multiply(scaleForRotateX180);
+      const originalFaceBottomPosition = new THREE.Vector3(...scaledKeypoints[FACE_INDEX_FACE_BOTTOM]).multiply(scaleForRotateX180);
+      const originalTopVector = originalFaceTopPosition.clone().sub(originalFaceBottomPosition);
 
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
-    geometry.uvsNeedUpdate = true;
-    geometry.normalsNeedUpdate = true;
-    geometry.verticesNeedUpdate = true;
+      geometry.translate(...originalFaceBottomPosition.clone().multiplyScalar(-1).toArray());
+
+      const l = originalTopVector.length();
+      //高さを1に
+      geometry.scale(1 / l, 1 / l, 1 / l);
+      geometry.scale(FACE_HEIGHT, FACE_HEIGHT, FACE_HEIGHT);
+
+      //傾いている顔を直す、この操作だけではY軸回転は治らない。
+      const q = new THREE.Quaternion().setFromUnitVectors(originalTopVector.clone().normalize(), new THREE.Vector3(0, 1, 0));
+      const mat = new THREE.Matrix4().makeRotationFromQuaternion(q);
+      geometry.applyMatrix4(mat);
+
+
+      geometry.computeFaceNormals();
+      geometry.computeVertexNormals();
+      geometry.uvsNeedUpdate = true;
+      geometry.normalsNeedUpdate = true;
+      geometry.verticesNeedUpdate = true;
+    }
+
+
+
     return geometry;
 
   }
@@ -110,7 +135,6 @@ export default class FaceResource {
     return new Promise((resolve) => {
       const { face } = this;
       const { image } = face;
-      const NOSE_TIP = 1;
       const scaledKeypoints = face.prediction.scaledMesh;
 
       const img = new Image();
@@ -120,7 +144,7 @@ export default class FaceResource {
         canvas.height = VIDEO_SIZE;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        const [x, y] = scaledKeypoints[NOSE_TIP];
+        const [x, y] = scaledKeypoints[FACE_INDEX_NOSE_TIP];
         const pixel = ctx.getImageData(x, y, 1, 1);
         resolve(new THREE.Color(pixel.data[0] / 255, pixel.data[1] / 255, pixel.data[2] / 255));
       };

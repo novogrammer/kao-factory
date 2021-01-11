@@ -232,7 +232,7 @@ export default class FactoryClientApp extends ClientAppBase {
     const z = new THREE.Vector3();
     const v = camera.getWorldPosition(z);
     for (let inletFace of inletFaces) {
-      inletFace.lookAt(v);
+      // inletFace.lookAt(v);
     }
   }
   render() {

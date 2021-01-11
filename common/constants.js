@@ -30,6 +30,15 @@ export const Z_OFFSET_PART = 0.01;
 export const Z_OFFSET_MASK = 0.001;
 
 
+export const FACE_INDEX_NOSE_TIP = 1;
+export const FACE_INDEX_FACE_TOP = 10;
+export const FACE_INDEX_FACE_BOTTOM = 152;
+
+
+//[m]
+export const FACE_HEIGHT = 10;
+
+
 export const DATA_DIR = "data/";
 export const FILEPATH_INLET_FACES_JSON = DATA_DIR + "inletFaces.json";
 export const FACES_DIR = DATA_DIR + "faces/";
