@@ -22,8 +22,6 @@ export default class FactoryLayout extends React.Component {
     const { position } = this.state;
     return (
       <CameraContext.Provider value={this.state}>
-
-        <div>FactoryLayout:{JSON.stringify(position)}</div>
         <FactoryView position={position}></FactoryView>
         <main>{children}</main>
       </CameraContext.Provider>

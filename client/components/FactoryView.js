@@ -10,24 +10,26 @@ export default class FactoryView extends React.Component {
   constructor(props) {
     super(props);
     this.viewRef = React.createRef();
-    this.dummyRef = React.createRef();
   }
   async componentDidMount() {
     console.log("FactoryView#componentDidMount");
-    console.log(this.dummyRef.current.innerHTML);
     const view = this.viewRef.current;
     const { addLogText, clearLogText } = this.context;
+
+    const { position } = this.props;
 
     this.factoryApp = new FactoryClientApp({
       view,
       addLogText,
       clearLogText,
+      position,
     });
     await this.factoryApp.setupPromise;
   }
   componentDidUpdate() {
     console.log("FactoryView#componentDidUpdate");
-    console.log(this.dummyRef.current.innerHTML);
+    const { position } = this.props;
+    this.factoryApp.updatePosition(position);
   }
   componentWillUnmount() {
     console.log("FactoryView#componentWillUnmount");
@@ -39,7 +41,6 @@ export default class FactoryView extends React.Component {
     return (
       <div className={styles["container"]}>
         <canvas className={styles["view"]} ref={this.viewRef} playsInline />
-        <div ref={this.dummyRef}>FactoryView:{JSON.stringify(position)}</div>
       </div>
     );
   }

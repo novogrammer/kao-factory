@@ -8,5 +8,5 @@ export default function Factory(props) {
   React.useEffect(() => {
     updatePosition(position);
   });
-  return (<div>Factory:{JSON.stringify(position)}</div>);
+  return (<></>);
 }

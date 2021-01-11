@@ -37,11 +37,12 @@ export default class FactoryClientApp extends ClientAppBase {
    * @override
    */
   async setupAsync(params) {
-    const { view } = params;
+    const { view, position } = params;
     const facePromiseAndResolveStore = {};
     const faceResourcePromiseStore = {};
     Object.assign(this, {
       view,
+      position,
       facePromiseAndResolveStore,
       faceResourcePromiseStore,
     });
@@ -133,7 +134,7 @@ export default class FactoryClientApp extends ClientAppBase {
   }
 
   setupThree() {
-    const { view } = this;
+    const { view, position } = this;
 
     const scene = new THREE.Scene();
     const size = this.getSize();
@@ -184,6 +185,7 @@ export default class FactoryClientApp extends ClientAppBase {
       clientCars,
       inletFaces,
     };
+    this.updatePosition(position);
 
   }
   destroyThree() {
@@ -302,5 +304,11 @@ export default class FactoryClientApp extends ClientAppBase {
       scene.add(inletFace);
 
     });
+  }
+  updatePosition(position) {
+    const { camera } = this.three;
+    camera.position.copy(position);
+    this.position = position;
+
   }
 }

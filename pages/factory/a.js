@@ -3,7 +3,7 @@ import FactoryLayout from "../../client/layouts/FactoryLayout";
 
 
 function FactoryAPage() {
-  const position = { x: 2, y: 2, z: 3 };
+  const position = { x: -3, y: 10, z: 10 };
 
   return (
     <Factory position={position}></Factory>
