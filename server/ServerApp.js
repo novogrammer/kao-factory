@@ -38,6 +38,7 @@ import {
 // import OsakaGridNetwork from "./Network/OsakaGridNetwork";
 
 import OsakaSociety from "./Society/OsakaSociety";
+import OsakaLayersSociety from "./Society/OsakaLayersSociety";
 
 const isHttps = false;
 

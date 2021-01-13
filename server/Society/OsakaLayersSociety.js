@@ -38,33 +38,31 @@ export default class OsakaLayersSociety extends SocietyBase {
       from.segments.push(segment);
 
     }
-    let allSections = [];
-    allSections = allSections.concat(grid1.sections);
-    allSections = allSections.concat(grid2.sections);
+    this.sections = this.sections.concat(grid1.sections);
+    this.sections = this.sections.concat(grid2.sections);
 
-
-
+    const { sections } = this;
     for (let i = 0; i < 40; ++i) {
-      if (i < allSections.length) {
-        const section = allSections[i];
+      if (i < sections.length) {
+        const section = sections[i];
         const car = new Car({ emitter });
         car.position.copy(section.position);
         section.enter(car);
         car.userData.section = section;
-        const from = allSections[0];
-        const to = allSections[allSections.length - 1];
+        const from = sections[0];
+        const to = sections[sections.length - 1];
 
         let commander = null;
         if (false) {
           commander = new RandomWalkCommander({
             car,
-            sections: allSections,
+            sections,
           });
 
         } else {
           commander = new RoundTripCommander({
             car,
-            sections: allSections,
+            sections,
             from,
             to,
           });

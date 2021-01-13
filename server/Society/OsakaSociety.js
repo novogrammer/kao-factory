@@ -17,30 +17,31 @@ export default class OsakaSociety extends SocietyBase {
     const { cars, commanders, emitter } = this;
 
     const grid = new OsakaGridNetwork(10, 10, 2);
-    const allSections = grid.sections;
+    this.sections = this.sections.concat(grid.sections);
 
+    const { sections } = this;
 
     for (let i = 0; i < 20; ++i) {
-      if (i < allSections.length) {
-        const section = allSections[i];
+      if (i < sections.length) {
+        const section = sections[i];
         const car = new Car({ emitter });
         car.position.copy(section.position);
         section.enter(car);
         car.userData.section = section;
-        const from = allSections[0];
-        const to = allSections[allSections.length - 1];
+        const from = sections[0];
+        const to = sections[sections.length - 1];
 
         let commander = null;
         if (false) {
           commander = new RandomWalkCommander({
             car,
-            sections: allSections,
+            sections,
           });
 
         } else {
           commander = new RoundTripCommander({
             car,
-            sections: allSections,
+            sections,
             from,
             to,
           });
