@@ -20,6 +20,7 @@ import InletFace from "./Face/InletFace";
 
 import {
   makeCube,
+  makeArrow,
 } from "./three_utils";
 
 export default class FactoryClientApp extends ClientAppBase {
@@ -99,15 +100,20 @@ export default class FactoryClientApp extends ClientAppBase {
     console.log("onNotifyNewFace", place, hash);
     this.setupNewFace(place, hash);
   }
-  onNotifyInitialize({ inletFaces, cars }) {
+  onNotifyInitialize({ inletFaces, cars, sections }) {
     console.log("onNotifyInitialize", inletFaces.length, cars.length);
 
-    const { clientCars, scene } = this.three;
+    const { clientCars, scene, arrows } = this.three;
     //再接続の時はゴミが残っている
     for (let clientCar of clientCars) {
       scene.remove(clientCar);
     }
     clientCars.length = 0;
+
+    for (let arrow of arrows) {
+      scene.remove(arrow);
+    }
+    arrows.length = 0;
 
 
     for (let { place, hash } of inletFaces) {
@@ -123,6 +129,30 @@ export default class FactoryClientApp extends ClientAppBase {
       scene.add(clientCar);
       clientCars.push(clientCar);
     }
+    const clientSections = sections.map((section) => {
+      console.log(section);
+      const position = new THREE.Vector3().copy(section.position);
+      const { segments } = section;
+      return {
+        position,
+        segments,
+      };
+    });
+    for (let clientSection of clientSections) {
+      const positionFrom = clientSection.position;
+      for (let segment of clientSection.segments) {
+        const { indexTo } = segment;
+        let clientSectionTo = clientSections[indexTo];
+        const positionTo = clientSectionTo.position;
+        let arrow = makeArrow(positionFrom, positionTo);
+        scene.add(arrow);
+        arrows.push(arrow);
+      }
+
+    }
+
+
+
   }
   onNotifyCarTurn({ id, duration, from, to }) {
     const clientCar = this.findClientCar(id);
@@ -156,7 +186,6 @@ export default class FactoryClientApp extends ClientAppBase {
     // }
 
 
-    const clientCars = [];
 
 
     camera.position.z = 20;
@@ -177,6 +206,8 @@ export default class FactoryClientApp extends ClientAppBase {
     }
 
     const inletFaces = [];
+    const clientCars = [];
+    const arrows = [];
 
     this.three = {
       scene,
@@ -184,6 +215,7 @@ export default class FactoryClientApp extends ClientAppBase {
       renderer,
       clientCars,
       inletFaces,
+      arrows,
     };
     this.updatePosition(position);
 

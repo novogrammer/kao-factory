@@ -115,7 +115,7 @@ export const EVENT_RESPONSE_FACE = "response face";
 
 // server -> factory
 // {
-//   faces:{
+//   inletFaces:{
 //     hash:String,
 //     place:Integer,
 //   }[],
@@ -123,6 +123,12 @@ export const EVENT_RESPONSE_FACE = "response face";
 //     id:String,
 //     position:Vector3,
 //     quaternion:Quaternion,
+//   }[],
+//   sections:{
+//     position:Vector3,
+//     segments:{
+//       indexTo:Integer,
+//     }[],
 //   }[],
 // }
 

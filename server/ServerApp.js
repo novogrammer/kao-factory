@@ -180,9 +180,25 @@ export default class ServerApp {
           quaternion,
         };
       });
+
+      const sections = this.society.sections.map((section) => {
+        const segments = section.segments.map((segment) => {
+          const indexTo = this.society.sections.findIndex((s) => s == segment.to);
+          if (indexTo == -1) {
+            throw new Error("segmentからsectionを解決できなかった");
+          }
+          return { indexTo };
+        });
+        const position = fromVector3ToObject(section.position);
+        return {
+          position,
+          segments,
+        };
+      })
       socket.emit(EVENT_NOTIFY_INITIALIZE, {
         inletFaces,
         cars,
+        sections,
       });
     }
 
