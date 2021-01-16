@@ -26,8 +26,6 @@ export const CAR_ANGULAR_VELOCITY = THREE.MathUtils.degToRad(360);
 //[m/s]
 export const CAR_VELOCITY = 10;
 
-export const Z_OFFSET_PART = 0.2;
-export const Z_OFFSET_MASK = 0.001;
 
 
 export const FACE_INDEX_NOSE_TIP = 1;
@@ -37,6 +35,8 @@ export const FACE_INDEX_FACE_BOTTOM = 152;
 
 //[m]
 export const FACE_HEIGHT = 10;
+export const Z_OFFSET_PART = 0.3;
+export const Z_OFFSET_MASK = 0.001;
 
 
 export const DATA_DIR = "data/";
