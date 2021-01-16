@@ -9,7 +9,7 @@ import gsap from "gsap";
 // const UP_VECTOR = new THREE.Vector3(0, 1, 0);
 // const ZERO_VECTOR = new THREE.Vector3(0, 0, 0);
 
-export default class ClientCar extends THREE.Group {
+export default class Car extends THREE.Group {
   constructor(id) {
     super();
     const body = makeCube(1, 0x00ff00);

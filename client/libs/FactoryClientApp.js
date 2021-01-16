@@ -12,7 +12,7 @@ import {
 
 import ClientAppBase from "./ClientAppBase";
 
-import ClientCar from "./ClientCar/ClientCar";
+import Car from "./Car/Car";
 
 import FaceResource from "./Face/FaceResource";
 
@@ -100,15 +100,15 @@ export default class FactoryClientApp extends ClientAppBase {
     console.log("onNotifyNewFace", place, hash);
     this.setupNewFace(place, hash);
   }
-  onNotifyInitialize({ inletFaces, cars, sections }) {
-    console.log("onNotifyInitialize", inletFaces.length, cars.length);
+  onNotifyInitialize({ inletFaces: messageInletFaces, cars: messageCars, sections: messageSections }) {
+    console.log("onNotifyInitialize", messageInletFaces.length, messageCars.length);
 
-    const { clientCars, scene, arrows } = this.three;
+    const { cars, scene, arrows } = this.three;
     //再接続の時はゴミが残っている
-    for (let clientCar of clientCars) {
-      scene.remove(clientCar);
+    for (let car of cars) {
+      scene.remove(car);
     }
-    clientCars.length = 0;
+    cars.length = 0;
 
     for (let arrow of arrows) {
       scene.remove(arrow);
@@ -116,34 +116,34 @@ export default class FactoryClientApp extends ClientAppBase {
     arrows.length = 0;
 
 
-    for (let { place, hash } of inletFaces) {
+    for (let { place, hash } of messageInletFaces) {
       this.setupNewFace(place, hash);
     }
 
 
 
-    for (let car of cars) {
-      const clientCar = new ClientCar(car.id);
-      clientCar.position.copy(car.position);
-      clientCar.quaternion.copy(car.quaternion);
-      scene.add(clientCar);
-      clientCars.push(clientCar);
+    for (let messageCar of messageCars) {
+      const car = new Car(messageCar.id);
+      car.position.copy(messageCar.position);
+      car.quaternion.copy(messageCar.quaternion);
+      scene.add(car);
+      cars.push(car);
     }
-    const clientSections = sections.map((section) => {
-      console.log(section);
-      const position = new THREE.Vector3().copy(section.position);
-      const { segments } = section;
+    const sections = messageSections.map((messageSection) => {
+      console.log(messageSection);
+      const position = new THREE.Vector3().copy(messageSection.position);
+      const { segments } = messageSection;
       return {
         position,
         segments,
       };
     });
-    for (let clientSection of clientSections) {
-      const positionFrom = clientSection.position;
-      for (let segment of clientSection.segments) {
+    for (let section of sections) {
+      const positionFrom = section.position;
+      for (let segment of section.segments) {
         const { indexTo } = segment;
-        let clientSectionTo = clientSections[indexTo];
-        const positionTo = clientSectionTo.position;
+        let sectionTo = sections[indexTo];
+        const positionTo = sectionTo.position;
         let arrow = makeArrow(positionFrom, positionTo);
         scene.add(arrow);
         arrows.push(arrow);
@@ -155,12 +155,12 @@ export default class FactoryClientApp extends ClientAppBase {
 
   }
   onNotifyCarTurn({ id, duration, from, to }) {
-    const clientCar = this.findClientCar(id);
-    clientCar.turn({ duration, from, to });
+    const car = this.findCar(id);
+    car.turn({ duration, from, to });
   }
   onNotifyCarMove({ id, duration, from, to }) {
-    const clientCar = this.findClientCar(id);
-    clientCar.move({ duration, from, to });
+    const car = this.findCar(id);
+    car.move({ duration, from, to });
   }
 
   setupThree() {
@@ -206,14 +206,14 @@ export default class FactoryClientApp extends ClientAppBase {
     }
 
     const inletFaces = [];
-    const clientCars = [];
+    const cars = [];
     const arrows = [];
 
     this.three = {
       scene,
       camera,
       renderer,
-      clientCars,
+      cars,
       inletFaces,
       arrows,
     };
@@ -278,9 +278,9 @@ export default class FactoryClientApp extends ClientAppBase {
     renderer.render(scene, camera);
 
   }
-  findClientCar(id) {
-    const { clientCars, scene } = this.three;
-    return clientCars.find((clientCar) => clientCar.userData.id == id);
+  findCar(id) {
+    const { cars, scene } = this.three;
+    return cars.find((car) => car.userData.id == id);
   }
   getFaceAsync(hash) {
     const { socket } = this;
