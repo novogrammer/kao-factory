@@ -17,10 +17,12 @@ export default class Car extends THREE.Group {
     head.position.z = -0.5;
     body.add(head);
     this.add(body);
+    const carrier = null;
     this.userData = {
       head,
       body,
-      id
+      id,
+      carrier,
     };
 
   }

@@ -5,11 +5,13 @@ export default class SocietyBase {
     const cars = [];
     const sections = [];
     const commanders = [];
+    const carriers = [];
     Object.assign(this, {
       emitter,
       cars,
       commanders,
       sections,
+      carriers,
     });
     this.setup();
   }

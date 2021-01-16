@@ -31,6 +31,7 @@ export default class Car extends THREE.Group {
       sectionTo: null,
       driver: null,
       movingState: CAR_MOVING_STATE_IDLE,
+      carrier: null,
     };
   }
   assign(driver) {

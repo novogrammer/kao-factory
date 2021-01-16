@@ -26,7 +26,7 @@ export const CAR_ANGULAR_VELOCITY = THREE.MathUtils.degToRad(360);
 //[m/s]
 export const CAR_VELOCITY = 10;
 
-export const Z_OFFSET_PART = 0.01;
+export const Z_OFFSET_PART = 0.2;
 export const Z_OFFSET_MASK = 0.001;
 
 
@@ -42,6 +42,15 @@ export const FACE_HEIGHT = 10;
 export const DATA_DIR = "data/";
 export const FILEPATH_INLET_FACES_JSON = DATA_DIR + "inletFaces.json";
 export const FACES_DIR = DATA_DIR + "faces/";
+
+export const CARRIER_TYPE_SINGLE = "single";
+export const CARRIER_TYPE_MULTIPLE = "multiple";
+
+export const PART_KIND_CONTOUR = "contour";
+export const PART_KIND_LEFT_EYE = "left eye";
+export const PART_KIND_RIGHT_EYE = "right eye";
+export const PART_KIND_NOSE = "nose";
+export const PART_KIND_MOUTH = "mouth";
 
 
 
@@ -123,6 +132,7 @@ export const EVENT_RESPONSE_FACE = "response face";
 //     id:String,
 //     position:Vector3,
 //     quaternion:Quaternion,
+//     carrierId:String,
 //   }[],
 //   sections:{
 //     position:Vector3,
@@ -130,6 +140,16 @@ export const EVENT_RESPONSE_FACE = "response face";
 //       indexTo:Integer,
 //     }[],
 //   }[],
+//   carriers:{
+//     id:String,
+//     type:String,
+//   }[],
+//   parts:{
+//     id:String,
+//     hash:String,
+//     kind:String,
+//     carrierId:String,
+//   }
 // }
 
 

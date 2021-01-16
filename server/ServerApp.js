@@ -27,6 +27,7 @@ import {
   FPS_SERVER,
   FILEPATH_INLET_FACES_JSON,
   FACES_DIR,
+  CARRIER_TYPE_MULTIPLE,
 } from "../common/constants";
 
 import {
@@ -39,6 +40,11 @@ import {
 
 import OsakaSociety from "./Society/OsakaSociety";
 import OsakaLayersSociety from "./Society/OsakaLayersSociety";
+import PartContour from "./Part/PartContour";
+import PartLeftEye from "./Part/PartLeftEye";
+import PartRightEye from "./Part/PartRightEye";
+import PartNose from "./Part/PartNose";
+import PartMouth from "./Part/PartMouth";
 
 const isHttps = false;
 
@@ -90,6 +96,51 @@ export default class ServerApp {
     } catch (error) {
       console.error(error);
     }
+
+    //TODO:ちゃんとロジックをつくる
+    {
+      const getRandomHash = () => {
+        const { inletFaces } = this;
+        const face = inletFaces[Math.floor(Math.random() * inletFaces.length)];
+        return face.hash;
+      }
+
+      const { carriers } = this.society;
+      for (let carrier of carriers) {
+        switch (carrier.type) {
+          case CARRIER_TYPE_MULTIPLE:
+            {
+              {
+                const partContour = new PartContour(getRandomHash());
+                carrier.add(partContour);
+              }
+              {
+                const partLeftEye = new PartLeftEye(getRandomHash());
+                carrier.add(partLeftEye);
+              }
+              {
+                const partRightEye = new PartRightEye(getRandomHash());
+                carrier.add(partRightEye);
+              }
+              {
+                const partNose = new PartNose(getRandomHash());
+                carrier.add(partNose);
+              }
+              {
+                const partMouth = new PartMouth(getRandomHash());
+                carrier.add(partMouth);
+              }
+            }
+            break;
+          default:
+            //いまは何もしない
+            break;
+        }
+      }
+    }
+
+
+
 
     setInterval(() => {
       this.onTick();
@@ -174,10 +225,16 @@ export default class ServerApp {
         const id = car.uuid;
         const position = fromVector3ToObject(car.position);
         const quaternion = fromQuaternionToObject(car.quaternion);
+        const { carrier } = car;
+        let carrierId = null;
+        if (carrier) {
+          carrierId = carrier.id;
+        }
         return {
           id,
           position,
           quaternion,
+          carrierId,
         };
       });
 
@@ -194,11 +251,32 @@ export default class ServerApp {
           position,
           segments,
         };
-      })
+      });
+
+      const carriers = this.society.carriers.map((carrier) => {
+        return carrier.toObject();
+      });
+      const parts = this.society.carriers.map((carrier) => {
+        return carrier.getAllParts();
+      }).flat().map((part) => {
+        let carrierId = null;
+        if (part.carrier) {
+          carrierId = part.carrier.id;
+        }
+        return {
+          id: part.id,
+          hash: part.hash,
+          kind: part.kind,
+          carrierId,
+        };
+      });
+
       socket.emit(EVENT_NOTIFY_INITIALIZE, {
         inletFaces,
         cars,
         sections,
+        carriers,
+        parts,
       });
     }
 

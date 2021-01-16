@@ -8,6 +8,13 @@ import {
   EVENT_NOTIFY_CAR_MOVE,
   EVENT_REQUEST_FACE,
   EVENT_RESPONSE_FACE,
+  CARRIER_TYPE_SINGLE,
+  CARRIER_TYPE_MULTIPLE,
+  PART_KIND_CONTOUR,
+  PART_KIND_LEFT_EYE,
+  PART_KIND_RIGHT_EYE,
+  PART_KIND_NOSE,
+  PART_KIND_MOUTH,
 } from "../../common/constants";
 
 import ClientAppBase from "./ClientAppBase";
@@ -16,12 +23,19 @@ import Car from "./Car/Car";
 
 import FaceResource from "./Face/FaceResource";
 
-import InletFace from "./Face/InletFace";
+// import InletFace from "./Face/InletFace";
 
 import {
   makeCube,
   makeArrow,
 } from "./three_utils";
+import SingleCarrier from "./Carrier/SingleCarrier";
+import MultipleCarrier from "./Carrier/MultipleCarrier";
+import FacePartContour from "./Face/FacePartContour";
+import FacePartLeftEye from "./Face/FacePartLeftEye";
+import FacePartRightEye from "./Face/FacePartRightEye";
+import FacePartNose from "./Face/FacePartNose";
+import FacePartMouth from "./Face/FacePartMouth";
 
 export default class FactoryClientApp extends ClientAppBase {
   constructor(params) {
@@ -100,20 +114,29 @@ export default class FactoryClientApp extends ClientAppBase {
     console.log("onNotifyNewFace", place, hash);
     this.setupNewFace(place, hash);
   }
-  onNotifyInitialize({ inletFaces: messageInletFaces, cars: messageCars, sections: messageSections }) {
-    console.log("onNotifyInitialize", messageInletFaces.length, messageCars.length);
+  onNotifyInitialize({
+    inletFaces: messageInletFaces,
+    cars: messageCars,
+    sections: messageSections,
+    carriers: messageCarriers,
+    parts: messageParts,
+  }) {
 
-    const { cars, scene, arrows } = this.three;
+    console.log("onNotifyInitialize");
+
+    const { scene } = this.three;
     //再接続の時はゴミが残っている
-    for (let car of cars) {
+    for (let car of this.three.cars) {
       scene.remove(car);
     }
-    cars.length = 0;
 
-    for (let arrow of arrows) {
+    for (let arrow of this.three.arrows) {
       scene.remove(arrow);
     }
-    arrows.length = 0;
+
+    for (let carrier of this.three.carriers) {
+      scene.remove(carrier);
+    }
 
 
     for (let { place, hash } of messageInletFaces) {
@@ -121,16 +144,49 @@ export default class FactoryClientApp extends ClientAppBase {
     }
 
 
+    const carriers = messageCarriers.map((messageCarrier) => {
+      let carrier = null;
+      switch (messageCarrier.type) {
+        case CARRIER_TYPE_SINGLE:
+          carrier = new SingleCarrier(messageCarrier.id);
+          break;
+        case CARRIER_TYPE_MULTIPLE:
+          carrier = new MultipleCarrier(messageCarrier.id);
+          break;
+        default:
+          throw new Error("unexpected messageCarrier.type:" + messageCarrier.type);
+      }
+      return carrier;
+    });
+    for (let carrier of carriers) {
+      scene.add(carrier);
+    }
 
+
+    Object.assign(this.three, {
+      carriers,
+    });
+
+    const cars = [];
     for (let messageCar of messageCars) {
       const car = new Car(messageCar.id);
       car.position.copy(messageCar.position);
       car.quaternion.copy(messageCar.quaternion);
+      if (messageCar.carrierId) {
+        const carrier = carriers.find((carrier) => carrier.userData.id == messageCar.carrierId);
+        if (!carrier) {
+          throw new Error("carrier not found messageCar.carrierId:" + messageCar.carrierId);
+        }
+        car.userData.carrier = carrier;
+      }
       scene.add(car);
       cars.push(car);
     }
+    Object.assign(this.three, {
+      cars,
+    });
+
     const sections = messageSections.map((messageSection) => {
-      console.log(messageSection);
       const position = new THREE.Vector3().copy(messageSection.position);
       const { segments } = messageSection;
       return {
@@ -138,6 +194,7 @@ export default class FactoryClientApp extends ClientAppBase {
         segments,
       };
     });
+    const arrows = [];
     for (let section of sections) {
       const positionFrom = section.position;
       for (let segment of section.segments) {
@@ -150,8 +207,49 @@ export default class FactoryClientApp extends ClientAppBase {
       }
 
     }
+    Object.assign(this.three, {
+      arrows,
+    });
 
 
+
+
+
+    const parts = messageParts.map((messagePart) => {
+      //この処理は共通化できるはず
+      const { id, hash, kind, carrierId } = messagePart;
+
+      const faceResourcePromise = this.getFaceResourceAsync(hash);
+
+      let part = null;
+      switch (kind) {
+        case PART_KIND_CONTOUR:
+          part = new FacePartContour({ id, faceResourcePromise });
+          break;
+        case PART_KIND_LEFT_EYE:
+          part = new FacePartLeftEye({ id, faceResourcePromise });
+          break;
+        case PART_KIND_RIGHT_EYE:
+          part = new FacePartRightEye({ id, faceResourcePromise });
+          break;
+        case PART_KIND_NOSE:
+          part = new FacePartNose({ id, faceResourcePromise });
+          break;
+        case PART_KIND_MOUTH:
+          part = new FacePartMouth({ id, faceResourcePromise });
+          break;
+        default:
+          throw new Error("unexpected kind:" + kind);
+      }
+
+      const carrier = carriers.find((carrier) => carrier.userData.id == carrierId);
+      if (!carrier) {
+        throw new Error("carrier not found");
+      }
+      carrier.add(part);
+
+      return null;
+    });
 
   }
   onNotifyCarTurn({ id, duration, from, to }) {
@@ -208,6 +306,7 @@ export default class FactoryClientApp extends ClientAppBase {
     const inletFaces = [];
     const cars = [];
     const arrows = [];
+    const carriers = [];
 
     this.three = {
       scene,
@@ -216,6 +315,7 @@ export default class FactoryClientApp extends ClientAppBase {
       cars,
       inletFaces,
       arrows,
+      carriers,
     };
     this.updatePosition(position);
 
@@ -262,12 +362,21 @@ export default class FactoryClientApp extends ClientAppBase {
     this.render();
   }
   update() {
-    const { inletFaces, camera } = this.three;
-    const z = new THREE.Vector3();
-    const v = camera.getWorldPosition(z);
+    const { inletFaces, camera, cars } = this.three;
+    const zeroVector = new THREE.Vector3();
+    const v = camera.getWorldPosition(zeroVector);
     for (let inletFace of inletFaces) {
       // inletFace.lookAt(v);
     }
+
+    for (let car of cars) {
+      const { carrier } = car.userData;
+      if (carrier) {
+        carrier.position.copy(car.getWorldPosition(new THREE.Vector3()));
+      }
+    }
+
+
   }
   render() {
     const {
@@ -320,22 +429,22 @@ export default class FactoryClientApp extends ClientAppBase {
     facePromiseAndResolve.resolve(face);
   }
   setupNewFace(place, hash) {
-    const { inletFaces, scene } = this.three;
+    // const { inletFaces, scene } = this.three;
 
-    const faceResourcePromise = this.getFaceResourceAsync(hash);
+    // const faceResourcePromise = this.getFaceResourceAsync(hash);
 
-    faceResourcePromise.then((faceResource) => {
-      const prevInletFace = inletFaces[place];
-      if (prevInletFace) {
-        scene.remove(prevInletFace);
-      }
-      const inletFace = new InletFace({ faceResource });
-      inletFace.position.x = place * 4;
+    // faceResourcePromise.then((faceResource) => {
+    //   const prevInletFace = inletFaces[place];
+    //   if (prevInletFace) {
+    //     scene.remove(prevInletFace);
+    //   }
+    //   const inletFace = new InletFace({ faceResource });
+    //   inletFace.position.x = place * 4;
 
-      inletFaces[place] = inletFace;
-      scene.add(inletFace);
+    //   inletFaces[place] = inletFace;
+    //   scene.add(inletFace);
 
-    });
+    // });
   }
   updatePosition(position) {
     const { camera } = this.three;
