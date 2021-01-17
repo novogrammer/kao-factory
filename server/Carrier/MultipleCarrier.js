@@ -12,9 +12,9 @@ import {
 import CarrierBase from "./CarrierBase";
 
 export default class MultipleCarrier extends CarrierBase {
-  constructor() {
+  constructor({ emitter }) {
     const type = CARRIER_TYPE_MULTIPLE;
-    super({ type });
+    super({ type, emitter });
     const partContour = null;
     const partLeftEye = null;
     const partRightEye = null;

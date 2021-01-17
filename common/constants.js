@@ -188,3 +188,19 @@ export const EVENT_NOTIFY_CAR_TURN = "notify car turn";
 export const EVENT_NOTIFY_CAR_MOVE = "notify car move";
 
 
+// server -> factory
+// {
+//   id: String,
+//   hash: String,
+//   kind: String,
+//   carrierId: String,
+// }
+export const EVENT_NOTIFY_PART_ADDED = "notify part added";
+
+// server -> factory
+// {
+//   id: String,
+//   carrierId: String,
+// }
+export const EVENT_NOTIFY_PART_REMOVED = "notify part removed";
+

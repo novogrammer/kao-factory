@@ -14,6 +14,8 @@ import {
   PART_KIND_RIGHT_EYE,
   PART_KIND_NOSE,
   PART_KIND_MOUTH,
+  EVENT_NOTIFY_PART_ADDED,
+  EVENT_NOTIFY_PART_REMOVED,
 } from "../../../common/constants";
 
 import ClientAppBase from "../ClientAppBase";
@@ -89,6 +91,9 @@ export default class FactoryClientApp extends ClientAppBase {
     socket.on(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
     socket.on(EVENT_NOTIFY_CAR_MOVE, this.getBind("onNotifyCarMove"));
 
+    socket.on(EVENT_NOTIFY_PART_ADDED, this.getBind("onNotifyPartAdded"));
+    socket.on(EVENT_NOTIFY_PART_REMOVED, this.getBind("onNotifyPartRemoved"));
+
     socket.on(EVENT_RESPONSE_FACE, this.getBind("onResponseFace"));
 
 
@@ -102,6 +107,9 @@ export default class FactoryClientApp extends ClientAppBase {
 
     socket.off(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
     socket.off(EVENT_NOTIFY_CAR_MOVE, this.getBind("onNotifyCarMove"));
+
+    socket.off(EVENT_NOTIFY_PART_ADDED, this.getBind("onNotifyPartAdded"));
+    socket.off(EVENT_NOTIFY_PART_REMOVED, this.getBind("onNotifyPartRemoved"));
 
     socket.off(EVENT_RESPONSE_FACE, this.getBind("onResponseFace"));
 
@@ -129,6 +137,10 @@ export default class FactoryClientApp extends ClientAppBase {
 
     for (let carrier of this.three.carriers) {
       scene.remove(carrier);
+    }
+
+    for (let part of this.three.parts) {
+      scene.remove(part);
     }
 
 
@@ -275,7 +287,10 @@ export default class FactoryClientApp extends ClientAppBase {
       }
       carrier.add(part);
 
-      return null;
+      return part;
+    });
+    Object.assign(this.three, {
+      parts,
     });
 
   }
@@ -287,6 +302,54 @@ export default class FactoryClientApp extends ClientAppBase {
     const car = this.findCar(id);
     car.move({ duration, from, to });
   }
+  onNotifyPartAdded({ id, hash, kind, carrierId }) {
+    const { parts, carriers } = this.three;
+    let part = null;
+    const faceResourcePromise = this.getFaceResourceAsync(hash);
+    switch (kind) {
+      case PART_KIND_CONTOUR:
+        part = new PartContour({ id, faceResourcePromise });
+        break;
+      case PART_KIND_LEFT_EYE:
+        part = new PartLeftEye({ id, faceResourcePromise });
+        break;
+      case PART_KIND_RIGHT_EYE:
+        part = new PartRightEye({ id, faceResourcePromise });
+        break;
+      case PART_KIND_NOSE:
+        part = new PartNose({ id, faceResourcePromise });
+        break;
+      case PART_KIND_MOUTH:
+        part = new PartMouth({ id, faceResourcePromise });
+        break;
+      default:
+        throw new Error("unexpected kind:" + kind);
+    }
+
+    const carrier = carriers.find((carrier) => carrier.userData.id == carrierId);
+    if (!carrier) {
+      throw new Error("carrier not found carrierId:" + carrierId);
+    }
+    carrier.add(part);
+    parts.push(part);
+
+  }
+  onNotifyPartRemoved({ id, carrierId }) {
+    const { parts, carriers } = this.three;
+    const part = parts.find((part) => part.userData.id == id);
+    if (!part) {
+      throw new Error("part not found id:" + id);
+    }
+    const carrier = carriers.find((carrier) => carrier.userData.id == carrierId);
+    if (!carrier) {
+      throw new Error("carrier not found carrierId:" + carrierId);
+    }
+    carrier.remove(part);
+
+    this.three.parts = parts.filter((part) => part.id != id);
+
+  }
+
 
   setupThree() {
     const { view, position } = this;
@@ -333,6 +396,7 @@ export default class FactoryClientApp extends ClientAppBase {
     const cars = [];
     const arrows = [];
     const carriers = [];
+    const parts = [];
     const deliveryPlaces = [];
 
     this.three = {
@@ -342,6 +406,7 @@ export default class FactoryClientApp extends ClientAppBase {
       cars,
       arrows,
       carriers,
+      parts,
       deliveryPlaces,
     };
     this.updatePosition(position);

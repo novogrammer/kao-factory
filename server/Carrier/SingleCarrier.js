@@ -1,13 +1,15 @@
 
 
 
-import { CARRIER_TYPE_SINGLE } from "../../common/constants";
+import {
+  CARRIER_TYPE_SINGLE,
+} from "../../common/constants";
 import CarrierBase from "./CarrierBase";
 
 export default class SingleCarrier extends CarrierBase {
-  constructor() {
+  constructor({ emitter }) {
     const type = CARRIER_TYPE_SINGLE;
-    super({ type });
+    super({ type, emitter });
     const part = null;
     Object.assign(this, {
       part,
@@ -28,17 +30,21 @@ export default class SingleCarrier extends CarrierBase {
   //   });
   // }
   add(part) {
+    const { emitter } = this;
     const { part: prevPart } = this;
     if (prevPart) {
       this.remove(prevPart);
     }
     part.carrier = this;
     this.part = part;
+
+    this.emitAdded(part);
   }
   remove(part) {
     if (part == this.part) {
       part.carrier = null;
       this.part = null;
+      this.emitRemoved(part);
     }
   }
   getAllParts() {

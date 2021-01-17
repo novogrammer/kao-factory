@@ -41,7 +41,7 @@ export default class OsakaSociety extends SocietyBase {
         deliveryPlace.sections.push(section);
         deliveryPlaces.push(deliveryPlace);
 
-        const carrier = new SingleCarrier();
+        const carrier = new SingleCarrier({ emitter });
         deliveryPlace.carrier = carrier;
         this.carriers.push(carrier);
         this.inletCarriers[i] = carrier;
@@ -57,7 +57,7 @@ export default class OsakaSociety extends SocietyBase {
         section.enter(car);
         car.userData.section = section;
 
-        const carrier = new SingleCarrier();
+        const carrier = new SingleCarrier({ emitter });
         car.carrier = carrier;
         this.carriers.push(carrier);
 

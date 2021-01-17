@@ -28,6 +28,8 @@ import {
   FACES_DIR,
   CARRIER_TYPE_MULTIPLE,
   CARRIER_TYPE_SINGLE,
+  EVENT_NOTIFY_PART_ADDED,
+  EVENT_NOTIFY_PART_REMOVED,
 } from "../common/constants";
 
 import {
@@ -84,6 +86,9 @@ export default class ServerApp {
 
     this.emitter.on(EVENT_NOTIFY_CAR_TURN, this.onNotifyCarTurn.bind(this));
     this.emitter.on(EVENT_NOTIFY_CAR_MOVE, this.onNotifyCarMove.bind(this));
+
+    this.emitter.on(EVENT_NOTIFY_PART_ADDED, this.onNotifyPartAdded.bind(this));
+    this.emitter.on(EVENT_NOTIFY_PART_REMOVED, this.onNotifyPartRemoved.bind(this));
 
     // this.society = new OsakaSociety({
     //   emitter: this.emitter,
@@ -279,6 +284,14 @@ export default class ServerApp {
   onNotifyCarMove(params) {
     //そのまま渡す
     this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_CAR_MOVE, params);
+  }
+  onNotifyPartAdded(params) {
+    //そのまま渡す
+    this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_PART_ADDED, params);
+  }
+  onNotifyPartRemoved(params) {
+    //そのまま渡す
+    this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_PART_REMOVED, params);
   }
   loadFace(hash) {
     const faceFilepath = FACES_DIR + hash + ".json";
