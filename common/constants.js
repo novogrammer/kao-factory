@@ -138,6 +138,11 @@ export const EVENT_RESPONSE_FACE = "response face";
 //       indexTo:Integer,
 //     }[],
 //   }[],
+//   deliveryPlaces:{
+//     id:String,
+//     sectionIds:String[],
+//     carrierId:String,
+//   }[],
 //   carriers:{
 //     id:String,
 //     type:String,
