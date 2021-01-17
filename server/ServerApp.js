@@ -95,57 +95,6 @@ export default class ServerApp {
       console.error(error);
     }
 
-    //TODO:ちゃんとロジックをつくる
-    {
-      const getRandomHash = () => {
-        const { inletFaces } = this.society;
-        const face = inletFaces[Math.floor(Math.random() * inletFaces.length)];
-        return face.hash;
-      }
-
-      const { carriers } = this.society;
-      for (let carrier of carriers) {
-        switch (carrier.type) {
-          case CARRIER_TYPE_MULTIPLE:
-            {
-              {
-                const partContour = new PartContour(getRandomHash());
-                carrier.add(partContour);
-              }
-              {
-                const partLeftEye = new PartLeftEye(getRandomHash());
-                carrier.add(partLeftEye);
-              }
-              {
-                const partRightEye = new PartRightEye(getRandomHash());
-                carrier.add(partRightEye);
-              }
-              {
-                const partNose = new PartNose(getRandomHash());
-                carrier.add(partNose);
-              }
-              {
-                const partMouth = new PartMouth(getRandomHash());
-                carrier.add(partMouth);
-              }
-            }
-            break;
-          case CARRIER_TYPE_SINGLE:
-            {
-              const partContour = new PartContour(getRandomHash());
-              carrier.add(partContour);
-            }
-            break;
-          default:
-            //いまは何もしない
-            break;
-        }
-      }
-    }
-
-
-
-
     setInterval(() => {
       this.onTick();
     }, 1000 / FPS_SERVER);
