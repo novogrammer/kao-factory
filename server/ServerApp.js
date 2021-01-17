@@ -40,6 +40,7 @@ import {
 
 import OsakaSociety from "./Society/OsakaSociety";
 import OsakaLayersSociety from "./Society/OsakaLayersSociety";
+import SimpleFactorySociety from "./Society/SimpleFactorySociety";
 import PartContour from "./Part/PartContour";
 import PartLeftEye from "./Part/PartLeftEye";
 import PartRightEye from "./Part/PartRightEye";
@@ -84,7 +85,7 @@ export default class ServerApp {
     this.emitter.on(EVENT_NOTIFY_CAR_TURN, this.onNotifyCarTurn.bind(this));
     this.emitter.on(EVENT_NOTIFY_CAR_MOVE, this.onNotifyCarMove.bind(this));
 
-    this.society = new OsakaSociety({
+    this.society = new SimpleFactorySociety({
       emitter: this.emitter,
     });
 
