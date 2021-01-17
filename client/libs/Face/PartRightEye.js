@@ -1,12 +1,12 @@
 import * as THREE from "three";
-import FacePartBase from "./FacePartBase";
+import PartBase from "./PartBase";
 
 import {
   PART_KIND_RIGHT_EYE,
   Z_OFFSET_PART,
 } from "../../../common/constants";
 
-export default class FacePartRightEye extends FacePartBase {
+export default class PartRightEye extends PartBase {
   constructor({ id, faceResourcePromise }) {
     const kind = PART_KIND_RIGHT_EYE;
     super({ id, kind, faceResourcePromise });

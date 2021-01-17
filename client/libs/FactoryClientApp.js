@@ -29,11 +29,11 @@ import {
 } from "./three_utils";
 import SingleCarrier from "./Carrier/SingleCarrier";
 import MultipleCarrier from "./Carrier/MultipleCarrier";
-import FacePartContour from "./Face/FacePartContour";
-import FacePartLeftEye from "./Face/FacePartLeftEye";
-import FacePartRightEye from "./Face/FacePartRightEye";
-import FacePartNose from "./Face/FacePartNose";
-import FacePartMouth from "./Face/FacePartMouth";
+import PartContour from "./Face/PartContour";
+import PartLeftEye from "./Face/PartLeftEye";
+import PartRightEye from "./Face/PartRightEye";
+import PartNose from "./Face/PartNose";
+import PartMouth from "./Face/PartMouth";
 
 export default class FactoryClientApp extends ClientAppBase {
   constructor(params) {
@@ -212,19 +212,19 @@ export default class FactoryClientApp extends ClientAppBase {
       let part = null;
       switch (kind) {
         case PART_KIND_CONTOUR:
-          part = new FacePartContour({ id, faceResourcePromise });
+          part = new PartContour({ id, faceResourcePromise });
           break;
         case PART_KIND_LEFT_EYE:
-          part = new FacePartLeftEye({ id, faceResourcePromise });
+          part = new PartLeftEye({ id, faceResourcePromise });
           break;
         case PART_KIND_RIGHT_EYE:
-          part = new FacePartRightEye({ id, faceResourcePromise });
+          part = new PartRightEye({ id, faceResourcePromise });
           break;
         case PART_KIND_NOSE:
-          part = new FacePartNose({ id, faceResourcePromise });
+          part = new PartNose({ id, faceResourcePromise });
           break;
         case PART_KIND_MOUTH:
-          part = new FacePartMouth({ id, faceResourcePromise });
+          part = new PartMouth({ id, faceResourcePromise });
           break;
         default:
           throw new Error("unexpected kind:" + kind);

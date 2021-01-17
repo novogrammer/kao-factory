@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import FacePartBase from "./FacePartBase";
+import PartBase from "./PartBase";
 
 import {
   PART_KIND_CONTOUR,
@@ -7,7 +7,7 @@ import {
 } from "../../../common/constants";
 
 
-export default class FacePartContour extends FacePartBase {
+export default class PartContour extends PartBase {
   constructor({ id, faceResourcePromise }) {
     const kind = PART_KIND_CONTOUR;
     super({ id, kind, faceResourcePromise });
