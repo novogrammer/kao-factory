@@ -14,6 +14,7 @@ export default class GridNetwork extends NetworkBase {
           (iz - (zQty - 1) / 2) * l
         );
         const section = new Section(position);
+        section.tags.push(`[${ix},${iz}]`);
         sections.push(section);
       }
     }

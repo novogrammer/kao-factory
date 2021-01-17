@@ -1,10 +1,20 @@
+import * as THREE from "three";
+
+
 export default class Section {
   constructor(position) {
+    const id = THREE.MathUtils.generateUUID();
+    const segments = [];
+    const owner = null;
+    const tags = [];
+
     Object.assign(this, {
       position,
+      id,
+      segments,
+      owner,
+      tags,
     });
-    this.segments = [];
-    this.owner = null;
   }
   //Balkingパターン
   enter(object) {

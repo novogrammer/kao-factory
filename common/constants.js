@@ -17,6 +17,7 @@ export const JPEG_QUALITY = 9.5;
 
 export const INLET_FACES_QTY = 4;
 
+
 //const FOVY = 60;
 
 
@@ -52,6 +53,13 @@ export const PART_KIND_RIGHT_EYE = "right eye";
 export const PART_KIND_NOSE = "nose";
 export const PART_KIND_MOUTH = "mouth";
 
+export const PART_KIND_LIST = [
+  PART_KIND_CONTOUR,
+  PART_KIND_LEFT_EYE,
+  PART_KIND_RIGHT_EYE,
+  PART_KIND_NOSE,
+  PART_KIND_MOUTH,
+];
 
 
 // Vector3 = {
@@ -124,6 +132,7 @@ export const EVENT_RESPONSE_FACE = "response face";
 //     carrierId:String,
 //   }[],
 //   sections:{
+//     id:String,
 //     position:Vector3,
 //     segments:{
 //       indexTo:Integer,

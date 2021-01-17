@@ -1,5 +1,10 @@
 import * as THREE from "three";
-import { INLET_FACES_QTY } from "../../common/constants";
+import { INLET_FACES_QTY, PART_KIND_LIST } from "../../common/constants";
+import PartContour from "../Part/PartContour";
+import PartLeftEye from "../Part/PartLeftEye";
+import PartMouth from "../Part/PartMouth";
+import PartNose from "../Part/PartNose";
+import PartRightEye from "../Part/PartRightEye";
 
 export default class SocietyBase {
   constructor({ emitter }) {
@@ -7,9 +12,18 @@ export default class SocietyBase {
     const sections = [];
     const commanders = [];
     const carriers = [];
+    const deliveryPlaces = [];
     const faces = {};
     const inletFaces = [];
     const inletFaceNextIndex = 0;
+    const inletCarriers = [];
+    const partKindQty = PART_KIND_LIST.length;
+    for (let i = 0; i < INLET_FACES_QTY; ++i) {
+      inletFaces[i] = null;
+      for (let j = 0; j < partKindQty; ++j) {
+        inletCarriers[i * partKindQty + j] = null;
+      }
+    }
 
     Object.assign(this, {
       emitter,
@@ -17,9 +31,11 @@ export default class SocietyBase {
       commanders,
       sections,
       carriers,
+      deliveryPlaces,
       faces,
       inletFaces,
       inletFaceNextIndex,
+      inletCarriers,
     });
     this.setup();
   }
@@ -44,7 +60,24 @@ export default class SocietyBase {
   setInletFace(place, face) {
     this.addFace(face);
     this.inletFaces[place] = face;
-    //TODO: このあたりでpartの入れ替えをする
+
+    const partKindQty = PART_KIND_LIST.length;
+    const PartClassList = [
+      PartContour,
+      PartLeftEye,
+      PartRightEye,
+      PartNose,
+      PartMouth,
+    ];
+    if (partKindQty != PartClassList.length) {
+      throw new Error("partKindQty != PartClassList.length");
+    }
+    for (let i = 0; i < partKindQty; ++i) {
+      const carrier = this.inletCarriers[place * partKindQty + i];
+      const PartClass = PartClassList[i];
+      const part = new PartClass(face.hash);
+      carrier.add(part);
+    }
 
   }
   newInletFace(face) {

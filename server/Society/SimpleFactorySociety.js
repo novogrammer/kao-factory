@@ -10,18 +10,44 @@ import RoundTripCommander from "../Commander/RoundTripCommander";
 import SocietyBase from "./SocietyBase";
 import MultipleCarrier from "../Carrier/MultipleCarrier";
 import SingleCarrier from "../Carrier/SingleCarrier";
+import DeliveryPlace from "../DeliveryPlace/DeliveryPlace";
 
 export default class SimpleFactorySociety extends SocietyBase {
   constructor(params) {
     super(params);
   }
   setup() {
-    const { cars, commanders, emitter } = this;
+    const { cars, commanders, emitter, deliveryPlaces } = this;
 
-    const grid = new OsakaGridNetwork(10, 10, 2);
-    this.sections = this.sections.concat(grid.sections);
-
+    const grid = new OsakaGridNetwork(20, 10, 1.5);
+    this.sections = this.sections.concat(grid.sections);;
     const { sections } = this;
+
+    {
+      const inletSectionTags = [
+        "[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",
+        "[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",
+        "[10,0]", "[11,0]", "[12,0]", "[13,0]", "[14,0]",
+        "[15,0]", "[16,0]", "[17,0]", "[18,0]", "[19,0]",
+      ];
+      for (let i = 0; i < inletSectionTags.length; ++i) {
+        const inletSectionTag = inletSectionTags[i];
+        const section = grid.findSectionByTag(inletSectionTag);
+        if (!section) {
+          throw new Error("section not found. inletSectionTag:" + inletSectionTag);
+        }
+        const deliveryPlace = new DeliveryPlace();
+        deliveryPlace.sections.push(section);
+        deliveryPlaces.push(deliveryPlace);
+
+        const carrier = new SingleCarrier();
+        deliveryPlace.carrier = carrier;
+        this.carriers.push(carrier);
+        this.inletCarriers[i] = carrier;
+
+      }
+    }
+
 
     for (let i = 0; i < 20; ++i) {
       if (i < sections.length) {

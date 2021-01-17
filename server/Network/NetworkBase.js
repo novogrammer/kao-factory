@@ -24,5 +24,8 @@ export default class NetworkBase {
     this.assignSection(indexFrom, indexTo);
     this.assignSection(indexTo, indexFrom);
   }
+  findSectionByTag(tag) {
+    return this.sections.find((section) => section.tags.includes(tag));
+  }
 
 }

@@ -34,6 +34,7 @@ import PartLeftEye from "./Face/PartLeftEye";
 import PartRightEye from "./Face/PartRightEye";
 import PartNose from "./Face/PartNose";
 import PartMouth from "./Face/PartMouth";
+import DeliveryPlace from "./DeliveryPlace/DeliveryPlace";
 
 export default class FactoryClientApp extends ClientAppBase {
   constructor(params) {
@@ -109,6 +110,7 @@ export default class FactoryClientApp extends ClientAppBase {
   onNotifyInitialize({
     cars: messageCars,
     sections: messageSections,
+    deliveryPlaces: messageDeliveryPlaces,
     carriers: messageCarriers,
     parts: messageParts,
   }) {
@@ -130,6 +132,9 @@ export default class FactoryClientApp extends ClientAppBase {
     }
 
 
+    for (let deliveryPlace of this.three.deliveryPlaces) {
+      scene.remove(deliveryPlace);
+    }
 
 
     const carriers = messageCarriers.map((messageCarrier) => {
@@ -174,10 +179,12 @@ export default class FactoryClientApp extends ClientAppBase {
       cars,
     });
 
+
     const sections = messageSections.map((messageSection) => {
       const position = new THREE.Vector3().copy(messageSection.position);
-      const { segments } = messageSection;
+      const { id, segments } = messageSection;
       return {
+        id,
         position,
         segments,
       };
@@ -199,6 +206,38 @@ export default class FactoryClientApp extends ClientAppBase {
       arrows,
     });
 
+
+    const deliveryPlaces = messageDeliveryPlaces.map((messageDeliveryPlace) => {
+      const { id } = messageDeliveryPlace;
+      if (messageDeliveryPlace.sectionIds.length == 0) {
+        throw new Error("messageDeliveryPlace.sectionIds.length==0");
+      }
+      let position = new THREE.Vector3();
+      for (let sectionId of messageDeliveryPlace.sectionIds) {
+        const section = sections.find((section) => section.id == sectionId);
+        if (!section) {
+          throw new Error("section not found. sectionId:" + sectionId);
+        }
+        position.add(section.position);
+      }
+      position.divideScalar(messageDeliveryPlace.sectionIds.length);
+
+      const deliveryPlace = new DeliveryPlace(id);
+      deliveryPlace.position.copy(position);
+      scene.add(deliveryPlace);
+
+      if (messageDeliveryPlace.carrierId) {
+        const carrier = carriers.find((carrier) => carrier.userData.id == messageDeliveryPlace.carrierId);
+        if (!carrier) {
+          throw new Error("carrier not found messageDeliveryPlace.carrierId:" + messageDeliveryPlace.carrierId);
+        }
+        deliveryPlace.userData.carrier = carrier;
+      }
+      return deliveryPlace;
+    });
+    Object.assign(this.three, {
+      deliveryPlaces,
+    });
 
 
 
@@ -294,6 +333,7 @@ export default class FactoryClientApp extends ClientAppBase {
     const cars = [];
     const arrows = [];
     const carriers = [];
+    const deliveryPlaces = [];
 
     this.three = {
       scene,
@@ -302,6 +342,7 @@ export default class FactoryClientApp extends ClientAppBase {
       cars,
       arrows,
       carriers,
+      deliveryPlaces,
     };
     this.updatePosition(position);
 
@@ -348,7 +389,7 @@ export default class FactoryClientApp extends ClientAppBase {
     this.render();
   }
   update() {
-    const { carriers, camera, cars } = this.three;
+    const { carriers, camera, cars, deliveryPlaces } = this.three;
     const zeroVector = new THREE.Vector3();
     const v = camera.getWorldPosition(zeroVector);
     for (let carrier of carriers) {
@@ -359,6 +400,14 @@ export default class FactoryClientApp extends ClientAppBase {
       const { carrier } = car.userData;
       if (carrier) {
         carrier.position.copy(car.getWorldPosition(new THREE.Vector3()));
+      }
+    }
+
+    //本来は動かないはず
+    for (let deliveryPlace of deliveryPlaces) {
+      const { carrier } = deliveryPlace.userData;
+      if (carrier) {
+        carrier.position.copy(deliveryPlace.getWorldPosition(new THREE.Vector3()));
       }
     }
 

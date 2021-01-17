@@ -185,6 +185,7 @@ export default class ServerApp {
       });
 
       const sections = this.society.sections.map((section) => {
+        const { id } = section;
         const segments = section.segments.map((segment) => {
           const indexTo = this.society.sections.findIndex((s) => s == segment.to);
           if (indexTo == -1) {
@@ -194,9 +195,13 @@ export default class ServerApp {
         });
         const position = fromVector3ToObject(section.position);
         return {
+          id,
           position,
           segments,
         };
+      });
+      const deliveryPlaces = this.society.deliveryPlaces.map((deliveryPlace) => {
+        return deliveryPlace.toObject();
       });
 
       const carriers = this.society.carriers.map((carrier) => {
@@ -216,10 +221,10 @@ export default class ServerApp {
           carrierId,
         };
       });
-
       socket.emit(EVENT_NOTIFY_INITIALIZE, {
         cars,
         sections,
+        deliveryPlaces,
         carriers,
         parts,
       });
