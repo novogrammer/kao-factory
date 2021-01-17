@@ -17,7 +17,6 @@ import {
   EVENT_NOTIFY_DISPLAY_ERROR_LOG,
   EVENT_NOTIFY_CLEAR_ERROR_LOG,
   EVENT_NOTIFY_UPLOAD_FACE,
-  EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
   EVENT_NOTIFY_CAR_TURN,
   EVENT_NOTIFY_CAR_MOVE,
@@ -293,14 +292,8 @@ export default class ServerApp {
     this.inletFaces[place] = face;
     this.inletFaceNextIndex = (this.inletFaceNextIndex + 1) % INLET_FACES_QTY;
 
-    this.io.to(ROOM_FACTORY).emit(EVENT_NOTIFY_NEW_FACE, {
-      place,
-      hash,
-    });
+    //TODO: このあたりでpartの入れ替えをする
 
-    // console.log(image);
-    // const j = JSON.stringify(prediction);
-    // console.log(image.length, j.length);
 
   }
   onNotifyLoadInletFaces(socket) {

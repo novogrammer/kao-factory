@@ -99,13 +99,6 @@ export const EVENT_NOTIFY_CLEAR_ERROR_LOG = "notify clear error log";
 export const EVENT_NOTIFY_UPLOAD_FACE = "notify upload face";
 
 
-// server -> factory
-// {
-//   place: Integer,
-//   hash: String,
-// }
-export const EVENT_NOTIFY_NEW_FACE = "notify new face";
-
 // factory -> server
 // {
 //   hash: String,

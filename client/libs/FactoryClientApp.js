@@ -2,7 +2,6 @@ import * as THREE from "three";
 import {
   FPS_FACTORY,
   ROOM_FACTORY,
-  EVENT_NOTIFY_NEW_FACE,
   EVENT_NOTIFY_INITIALIZE,
   EVENT_NOTIFY_CAR_TURN,
   EVENT_NOTIFY_CAR_MOVE,
@@ -23,7 +22,6 @@ import Car from "./Car/Car";
 
 import FaceResource from "./Face/FaceResource";
 
-// import InletFace from "./Face/InletFace";
 
 import {
   makeCube,
@@ -85,7 +83,6 @@ export default class FactoryClientApp extends ClientAppBase {
   setupSocketIo() {
     super.setupSocketIo();
     const { socket } = this;
-    socket.on(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
     socket.on(EVENT_NOTIFY_INITIALIZE, this.getBind("onNotifyInitialize"))
 
     socket.on(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
@@ -100,7 +97,6 @@ export default class FactoryClientApp extends ClientAppBase {
    */
   destorySocketIo() {
     const { socket } = this;
-    socket.off(EVENT_NOTIFY_NEW_FACE, this.getBind("onNotifyNewFace"));
     socket.off(EVENT_NOTIFY_INITIALIZE, this.getBind("onNotifyInitialize"))
 
     socket.off(EVENT_NOTIFY_CAR_TURN, this.getBind("onNotifyCarTurn"));
@@ -110,12 +106,7 @@ export default class FactoryClientApp extends ClientAppBase {
 
     super.destorySocketIo();
   }
-  onNotifyNewFace({ place, hash }) {
-    console.log("onNotifyNewFace", place, hash);
-    this.setupNewFace(place, hash);
-  }
   onNotifyInitialize({
-    inletFaces: messageInletFaces,
     cars: messageCars,
     sections: messageSections,
     carriers: messageCarriers,
@@ -139,9 +130,6 @@ export default class FactoryClientApp extends ClientAppBase {
     }
 
 
-    for (let { place, hash } of messageInletFaces) {
-      this.setupNewFace(place, hash);
-    }
 
 
     const carriers = messageCarriers.map((messageCarrier) => {
@@ -303,7 +291,6 @@ export default class FactoryClientApp extends ClientAppBase {
 
     }
 
-    const inletFaces = [];
     const cars = [];
     const arrows = [];
     const carriers = [];
@@ -313,7 +300,6 @@ export default class FactoryClientApp extends ClientAppBase {
       camera,
       renderer,
       cars,
-      inletFaces,
       arrows,
       carriers,
     };
@@ -427,24 +413,6 @@ export default class FactoryClientApp extends ClientAppBase {
     console.log("onResponseFace", hash);
     let facePromiseAndResolve = this.facePromiseAndResolveStore[hash];
     facePromiseAndResolve.resolve(face);
-  }
-  setupNewFace(place, hash) {
-    // const { inletFaces, scene } = this.three;
-
-    // const faceResourcePromise = this.getFaceResourceAsync(hash);
-
-    // faceResourcePromise.then((faceResource) => {
-    //   const prevInletFace = inletFaces[place];
-    //   if (prevInletFace) {
-    //     scene.remove(prevInletFace);
-    //   }
-    //   const inletFace = new InletFace({ faceResource });
-    //   inletFace.position.x = place * 4;
-
-    //   inletFaces[place] = inletFace;
-    //   scene.add(inletFace);
-
-    // });
   }
   updatePosition(position) {
     const { camera } = this.three;
