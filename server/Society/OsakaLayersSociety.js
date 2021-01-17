@@ -10,13 +10,14 @@ import LineSegment from "../Segment/LineSegment";
 import SocietyBase from "./SocietyBase";
 import MultipleCarrier from "../Carrier/MultipleCarrier";
 import SingleCarrier from "../Carrier/SingleCarrier";
+import DeliveryPlace from "../DeliveryPlace/DeliveryPlace";
 
 export default class OsakaLayersSociety extends SocietyBase {
   constructor(params) {
     super(params);
   }
   setup() {
-    const { cars, commanders, emitter } = this;
+    const { cars, commanders, emitter, deliveryPlaces } = this;
 
     const grid1 = new OsakaGridNetwork(10, 10, 2);
     const grid2 = new OsakaGridNetwork(10, 10, 2);
@@ -44,6 +45,33 @@ export default class OsakaLayersSociety extends SocietyBase {
     this.sections = this.sections.concat(grid2.sections);
 
     const { sections } = this;
+
+    {
+      const inletSectionTags = [
+        "[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",
+        "[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",
+        "[0,1]", "[1,1]", "[2,1]", "[3,1]", "[4,1]",
+        "[5,1]", "[6,1]", "[7,1]", "[8,1]", "[9,1]",
+      ];
+      for (let i = 0; i < inletSectionTags.length; ++i) {
+        const inletSectionTag = inletSectionTags[i];
+        const section = grid1.findSectionByTag(inletSectionTag);
+        if (!section) {
+          throw new Error("section not found. inletSectionTag:" + inletSectionTag);
+        }
+        const deliveryPlace = new DeliveryPlace();
+        deliveryPlace.sections.push(section);
+        deliveryPlaces.push(deliveryPlace);
+
+        const carrier = new SingleCarrier();
+        deliveryPlace.carrier = carrier;
+        this.carriers.push(carrier);
+        this.inletCarriers[i] = carrier;
+
+      }
+    }
+
+
     for (let i = 0; i < 40; ++i) {
       if (i < sections.length) {
         const section = sections[i];

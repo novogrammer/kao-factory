@@ -85,9 +85,16 @@ export default class ServerApp {
     this.emitter.on(EVENT_NOTIFY_CAR_TURN, this.onNotifyCarTurn.bind(this));
     this.emitter.on(EVENT_NOTIFY_CAR_MOVE, this.onNotifyCarMove.bind(this));
 
+    // this.society = new OsakaSociety({
+    //   emitter: this.emitter,
+    // });
+    // this.society = new OsakaLayersSociety({
+    //   emitter: this.emitter,
+    // });
     this.society = new SimpleFactorySociety({
       emitter: this.emitter,
     });
+
 
     try {
       this.loadInletFaces();
