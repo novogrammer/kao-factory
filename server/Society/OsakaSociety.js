@@ -9,6 +9,7 @@ import RoundTripCommander from "../Commander/RoundTripCommander";
 
 import SocietyBase from "./SocietyBase";
 import MultipleCarrier from "../Carrier/MultipleCarrier";
+import SingleCarrier from "../Carrier/SingleCarrier";
 
 export default class OsakaSociety extends SocietyBase {
   constructor(params) {
@@ -27,7 +28,7 @@ export default class OsakaSociety extends SocietyBase {
         const section = sections[i];
         const car = new Car({ emitter });
         car.position.copy(section.position);
-        const carrier = new MultipleCarrier();
+        const carrier = new SingleCarrier();
         car.carrier = carrier;
         this.carriers.push(carrier);
         section.enter(car);

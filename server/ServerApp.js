@@ -27,6 +27,7 @@ import {
   FILEPATH_INLET_FACES_JSON,
   FACES_DIR,
   CARRIER_TYPE_MULTIPLE,
+  CARRIER_TYPE_SINGLE,
 } from "../common/constants";
 
 import {
@@ -129,6 +130,12 @@ export default class ServerApp {
                 const partMouth = new PartMouth(getRandomHash());
                 carrier.add(partMouth);
               }
+            }
+            break;
+          case CARRIER_TYPE_SINGLE:
+            {
+              const partContour = new PartContour(getRandomHash());
+              carrier.add(partContour);
             }
             break;
           default:
@@ -257,7 +264,7 @@ export default class ServerApp {
       });
       const parts = this.society.carriers.map((carrier) => {
         return carrier.getAllParts();
-      }).flat().map((part) => {
+      }).flat().filter((part) => !!part).map((part) => {
         let carrierId = null;
         if (part.carrier) {
           carrierId = part.carrier.id;
