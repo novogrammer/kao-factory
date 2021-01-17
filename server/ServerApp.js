@@ -167,13 +167,6 @@ export default class ServerApp {
     socket.on(EVENT_REQUEST_FACE, this.onRequestFace.bind(this, socket));
 
     {
-      const inletFaces = this.society.inletFaces.map((inletFace, place) => {
-        const { hash } = inletFace;
-        return {
-          place,
-          hash,
-        };
-      });
       const cars = this.society.cars.map((car) => {
         const id = car.uuid;
         const position = fromVector3ToObject(car.position);
@@ -225,7 +218,6 @@ export default class ServerApp {
       });
 
       socket.emit(EVENT_NOTIFY_INITIALIZE, {
-        inletFaces,
         cars,
         sections,
         carriers,

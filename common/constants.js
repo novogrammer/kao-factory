@@ -117,10 +117,6 @@ export const EVENT_RESPONSE_FACE = "response face";
 
 // server -> factory
 // {
-//   inletFaces:{
-//     hash:String,
-//     place:Integer,
-//   }[],
 //   cars:{
 //     id:String,
 //     position:Vector3,
