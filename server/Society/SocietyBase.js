@@ -6,12 +6,19 @@ export default class SocietyBase {
     const sections = [];
     const commanders = [];
     const carriers = [];
+    const faces = {};
+    const inletFaces = [];
+    const inletFaceNextIndex = 0;
+
     Object.assign(this, {
       emitter,
       cars,
       commanders,
       sections,
       carriers,
+      faces,
+      inletFaces,
+      inletFaceNextIndex,
     });
     this.setup();
   }
