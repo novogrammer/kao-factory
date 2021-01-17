@@ -4,9 +4,9 @@ import {
   VIDEO_SIZE,
   EVENT_NOTIFY_UPLOAD_FACE,
   JPEG_QUALITY,
-} from "../../common/constants";
+} from "../../../common/constants";
 
-import ClientAppBase from "./ClientAppBase";
+import ClientAppBase from "../ClientAppBase";
 
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import * as tf from '@tensorflow/tfjs-core';

@@ -1,4 +1,4 @@
-import { CARRIER_TYPE_SINGLE } from "../../../common/constants";
+import { CARRIER_TYPE_SINGLE } from "../../../../common/constants";
 import CarrierBase from "./CarrierBase";
 
 export default class SingleCarrier extends CarrierBase {

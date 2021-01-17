@@ -4,7 +4,7 @@ import PartBase from "./PartBase";
 import {
   PART_KIND_RIGHT_EYE,
   Z_OFFSET_PART,
-} from "../../../common/constants";
+} from "../../../../common/constants";
 
 export default class PartRightEye extends PartBase {
   constructor({ id, faceResourcePromise }) {

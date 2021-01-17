@@ -2,13 +2,13 @@ import * as THREE from "three";
 import PartBase from "./PartBase";
 
 import {
-  PART_KIND_LEFT_EYE,
+  PART_KIND_NOSE,
   Z_OFFSET_PART,
-} from "../../../common/constants";
+} from "../../../../common/constants";
 
-export default class PartLeftEye extends PartBase {
+export default class PartNose extends PartBase {
   constructor({ id, faceResourcePromise }) {
-    const kind = PART_KIND_LEFT_EYE;
+    const kind = PART_KIND_NOSE;
     super({ id, kind, faceResourcePromise });
   }
   /**
@@ -19,9 +19,8 @@ export default class PartLeftEye extends PartBase {
     const faceResource = await this.userData.faceResourcePromise;
 
     const { geometries, materials } = faceResource;
-    const leftEyeMesh = new THREE.Mesh(geometries.leftEye, materials.normal);
-    leftEyeMesh.position.z = Z_OFFSET_PART;
-    this.add(leftEyeMesh);
-
+    const noseMesh = new THREE.Mesh(geometries.nose, materials.normal);
+    noseMesh.position.z = Z_OFFSET_PART;
+    this.add(noseMesh);
   }
 }

@@ -3,7 +3,7 @@ import styles from './FactoryView.module.scss'
 
 import LogTextContext from "../context/LogTextContext";
 
-import FactoryClientApp from "../libs/FactoryClientApp";
+import FactoryClientApp from "../libs/Factory/FactoryClientApp";
 
 export default class FactoryView extends React.Component {
   static contextType = LogTextContext;

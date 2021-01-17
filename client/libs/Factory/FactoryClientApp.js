@@ -14,9 +14,9 @@ import {
   PART_KIND_RIGHT_EYE,
   PART_KIND_NOSE,
   PART_KIND_MOUTH,
-} from "../../common/constants";
+} from "../../../common/constants";
 
-import ClientAppBase from "./ClientAppBase";
+import ClientAppBase from "../ClientAppBase";
 
 import Car from "./Car/Car";
 
@@ -26,7 +26,7 @@ import FaceResource from "./Face/FaceResource";
 import {
   makeCube,
   makeArrow,
-} from "./three_utils";
+} from "../three_utils";
 import SingleCarrier from "./Carrier/SingleCarrier";
 import MultipleCarrier from "./Carrier/MultipleCarrier";
 import PartContour from "./Face/PartContour";

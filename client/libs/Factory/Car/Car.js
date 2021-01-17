@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {
   makeCube,
-} from "../three_utils";
+} from "../../three_utils";
 
 import gsap from "gsap";
 

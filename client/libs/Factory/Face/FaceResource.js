@@ -5,7 +5,7 @@ import {
   FACE_INDEX_NOSE_TIP,
   FACE_INDEX_FACE_TOP,
   FACE_INDEX_FACE_BOTTOM,
-} from "../../../common/constants";
+} from "../../../../common/constants";
 import {
   leftEyeFaces,
   rightEyeFaces,

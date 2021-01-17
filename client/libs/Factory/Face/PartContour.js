@@ -4,7 +4,7 @@ import PartBase from "./PartBase";
 import {
   PART_KIND_CONTOUR,
   Z_OFFSET_MASK,
-} from "../../../common/constants";
+} from "../../../../common/constants";
 
 
 export default class PartContour extends PartBase {

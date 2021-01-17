@@ -4,7 +4,7 @@ import PartBase from "./PartBase";
 import {
   PART_KIND_MOUTH,
   Z_OFFSET_PART,
-} from "../../../common/constants";
+} from "../../../../common/constants";
 
 export default class PartMouth extends PartBase {
   constructor({ id, faceResourcePromise }) {

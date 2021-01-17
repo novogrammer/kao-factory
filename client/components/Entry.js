@@ -3,7 +3,7 @@ import styles from './Entry.module.scss'
 
 import LogTextContext from "../context/LogTextContext";
 
-import EntryClientApp from "../libs/EntryClientApp";
+import EntryClientApp from "../libs/Entry/EntryClientApp";
 
 export default class Entry extends React.Component {
   static contextType = LogTextContext;

@@ -6,7 +6,7 @@ import {
   PART_KIND_NOSE,
   PART_KIND_MOUTH,
 
-} from "../../../common/constants";
+} from "../../../../common/constants";
 import CarrierBase from "./CarrierBase";
 
 export default class MultipleCarrier extends CarrierBase {
