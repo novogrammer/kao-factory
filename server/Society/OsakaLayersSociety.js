@@ -8,6 +8,8 @@ import RoundTripCommander from "../Commander/RoundTripCommander";
 
 import LineSegment from "../Segment/LineSegment";
 import SocietyBase from "./SocietyBase";
+import MultipleCarrier from "../Carrier/MultipleCarrier";
+import SingleCarrier from "../Carrier/SingleCarrier";
 
 export default class OsakaLayersSociety extends SocietyBase {
   constructor(params) {
@@ -49,6 +51,11 @@ export default class OsakaLayersSociety extends SocietyBase {
         car.position.copy(section.position);
         section.enter(car);
         car.userData.section = section;
+
+        const carrier = new SingleCarrier();
+        car.carrier = carrier;
+        this.carriers.push(carrier);
+
         const from = sections[0];
         const to = sections[sections.length - 1];
 

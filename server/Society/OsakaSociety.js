@@ -28,11 +28,14 @@ export default class OsakaSociety extends SocietyBase {
         const section = sections[i];
         const car = new Car({ emitter });
         car.position.copy(section.position);
+        section.enter(car);
+        car.userData.section = section;
+
         const carrier = new SingleCarrier();
         car.carrier = carrier;
         this.carriers.push(carrier);
-        section.enter(car);
-        car.userData.section = section;
+
+
         const from = sections[0];
         const to = sections[sections.length - 1];
 
