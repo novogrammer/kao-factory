@@ -291,13 +291,7 @@ export default class ServerApp {
       image,
       prediction,
     };
-    this.society.faces[hash] = face;
-    const place = this.society.inletFaceNextIndex;
-    this.society.inletFaces[place] = face;
-    this.society.inletFaceNextIndex = (this.society.inletFaceNextIndex + 1) % INLET_FACES_QTY;
-
-    //TODO: このあたりでpartの入れ替えをする
-
+    this.society.newInletFace(face);
 
   }
   onNotifyLoadInletFaces(socket) {
@@ -349,11 +343,10 @@ export default class ServerApp {
     for (let i = 0; i < INLET_FACES_QTY; ++i) {
       const hash = hashes[i];
       if (!hash) {
-        this.society.inletFaces[i] = null;
+        this.society.setInletFace(i, null);
       } else {
         const face = this.loadFace(hash);
-        this.society.inletFaces[i] = face;
-        this.society.faces[hash] = face;
+        this.society.setInletFace(i, face);
       }
     }
 
@@ -361,7 +354,7 @@ export default class ServerApp {
   saveInletFaces() {
     const hashes = [];
     for (let i = 0; i < INLET_FACES_QTY; ++i) {
-      const inletFace = this.society.inletFaces[i];
+      const inletFace = this.society.getInletFace(i);
       if (inletFace) {
         hashes.push(inletFace.hash);
         this.saveFace(inletFace);
@@ -382,7 +375,7 @@ export default class ServerApp {
   }
   onRequestFace(socket, { hash }) {
     console.log("onRequestFace");
-    const face = this.society.faces[hash];
+    const face = this.society.getFace(hash);
     if (face) {
       socket.emit(EVENT_RESPONSE_FACE, face);
     } else {
