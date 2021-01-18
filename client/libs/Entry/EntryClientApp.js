@@ -31,6 +31,10 @@ function drawPath(viewCtx, points, closePath) {
   viewCtx.stroke(region);
 }
 
+import ShutterStateReady from "./ShutterState/ShutterStateReady";
+import ShutterStateCount from "./ShutterState/ShutterStateCount";
+import ShutterStateRemain from "./ShutterState/ShutterStateRemain";
+
 export default class EntryClientApp extends ClientAppBase {
   constructor(params) {
     const paramsForSuper = Object.assign(
@@ -46,20 +50,43 @@ export default class EntryClientApp extends ClientAppBase {
    * @override
    */
   async setupAsync(params) {
-    const { video, view, loading } = params;
-    this.needsSend = false;
+    const {
+      video,
+      view,
+      loading,
+      flash,
+      noFace,
+      countText,
+      remain,
+    } = params;
+    const needsSend = false;
+    const faceCount = 0;
+    const ClassMap = {
+      ShutterStateReady,
+      ShutterStateCount,
+      ShutterStateRemain,
+    };
+    const shutterState = null;
     Object.assign(this, {
       video,
       view,
       loading,
+      flash,
+      noFace,
+      countText,
+      remain,
+      needsSend,
+      faceCount,
+      ClassMap,
+      shutterState,
     });
+    this.setNextShutterState(new ShutterStateReady(this));
     await this.setupModelAsync();
     await this.setupCameraAsync();
 
     //onTickなどもあるので最後にする。
     //問題が起きれば実行順を数値で表すなどする。
     await super.setupAsync(params);
-    loading.style.display = "none";
 
     view.addEventListener("click", this.getBind("onClickView"));
   }
@@ -162,6 +189,7 @@ export default class EntryClientApp extends ClientAppBase {
       videoImage,
       videoImageCtx,
       socket,
+      loading,
     } = this;
 
     videoImageCtx.drawImage(
@@ -172,6 +200,11 @@ export default class EntryClientApp extends ClientAppBase {
     const predictions = await model.estimateFaces({
       input: videoImage,
     });
+    this.faceCount = predictions.length;
+
+    if (this.shutterState) {
+      this.shutterState.onTick(1 / FPS_ENTRY);
+    }
 
     if (this.needsSend && 0 < predictions.length) {
       this.needsSend = false;
@@ -184,6 +217,7 @@ export default class EntryClientApp extends ClientAppBase {
     }
 
     this.drawFaces(predictions);
+    loading.style.display = "none";
   }
   drawFaces(predictions) {
     const {
@@ -225,5 +259,13 @@ export default class EntryClientApp extends ClientAppBase {
 
     this.needsSend = true;
 
+  }
+  setNextShutterState(nextShutterState) {
+    const { shutterState: prevShutterState } = this;
+    if (prevShutterState) {
+      prevShutterState.onEnd();
+    }
+    this.shutterState = nextShutterState;
+    nextShutterState.onBegin();
   }
 }

@@ -1,13 +1,21 @@
 .container {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
 }
 
 .view {
-  // transform: scale(-1,1);
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  // transform: scale(-1,1);
   display: block;
+  width: 100vmin;
+  height: 100vmin;
+  transform: translate(-50%, -50%);
 }
 
 .video {
@@ -21,8 +29,57 @@
 
 .loading {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 10vmin;
+
+  color: #f0f;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.flash {
+  position: absolute;
   top: 0;
   left: 0;
-  font-size: 60px;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: #fff;
+  opacity: 0;
+}
+.no-face {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: none;
+  width: 100%;
+  font-size: 10vmin;
+
   color: #f0f;
+  text-align: center;
+  pointer-events: none;
+}
+.count-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: none;
+  font-size: 40vmin;
+
+  color: #f0f;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.remain {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: none;
+  width: 100%;
+  font-size: 10vmin;
+
+  color: #f0f;
+  text-align: center;
+  pointer-events: none;
 }
