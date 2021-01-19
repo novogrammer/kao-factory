@@ -8,4 +8,9 @@ export default class PartRightEye extends PartBase {
     const kind = PART_KIND_RIGHT_EYE;
     super({ hash, kind });
   }
+  // carrierは共有しない
+  clone() {
+    const part = new PartRightEye(this.hash);
+    return part;
+  }
 }

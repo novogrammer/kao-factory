@@ -303,6 +303,7 @@ export default class FactoryClientApp extends ClientAppBase {
     car.move({ duration, from, to });
   }
   onNotifyPartAdded({ id, hash, kind, carrierId }) {
+    // console.log("onNotifyPartAdded", id, carrierId);
     const { parts, carriers } = this.three;
     let part = null;
     const faceResourcePromise = this.getFaceResourceAsync(hash);
@@ -335,6 +336,7 @@ export default class FactoryClientApp extends ClientAppBase {
 
   }
   onNotifyPartRemoved({ id, carrierId }) {
+    // console.log("onNotifyPartRemoved", id, carrierId);
     const { parts, carriers } = this.three;
     const part = parts.find((part) => part.userData.id == id);
     if (!part) {

@@ -8,4 +8,9 @@ export default class PartMouth extends PartBase {
     const kind = PART_KIND_MOUTH;
     super({ hash, kind });
   }
+  // carrierは共有しない
+  clone() {
+    const part = new PartMouth(this.hash);
+    return part;
+  }
 }

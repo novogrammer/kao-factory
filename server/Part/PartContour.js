@@ -8,4 +8,9 @@ export default class PartContour extends PartBase {
     const kind = PART_KIND_CONTOUR;
     super({ hash, kind });
   }
+  // carrierは共有しない
+  clone() {
+    const part = new PartContour(this.hash);
+    return part;
+  }
 }

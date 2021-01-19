@@ -57,6 +57,16 @@ export default class SocietyBase {
     const face = this.inletFaces[place];
     return face;
   }
+  filterSectionsByDeliveryPlace(deliveryPlace) {
+    return this.sections.filter((section) => {
+      return deliveryPlace.sections.some((sectionInDeliveryPlace) => sectionInDeliveryPlace == section);
+    });
+  }
+  filterDeliveryPlaceByCarrier(carrier) {
+    return this.deliveryPlaces.filter((deliveryPlace) => {
+      return deliveryPlace.carrier == carrier;
+    })
+  }
   setInletFace(place, face) {
     this.addFace(face);
     this.inletFaces[place] = face;

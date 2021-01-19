@@ -8,4 +8,9 @@ export default class PartNose extends PartBase {
     const kind = PART_KIND_NOSE;
     super({ hash, kind });
   }
+  // carrierは共有しない
+  clone() {
+    const part = new PartNose(this.hash);
+    return part;
+  }
 }

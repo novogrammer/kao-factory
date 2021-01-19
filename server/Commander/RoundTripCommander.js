@@ -14,13 +14,15 @@ const BREAK_TIME = 1;
 export default class RoundTripCommander extends CommanderBase {
   constructor(args) {
     super(args);
-    const { from, to } = args;
+    const { from, to, onFrom = () => { }, onTo = () => { } } = args;
 
     Object.assign(this, {
       tripState: null,
       drivingState: null,
       from,
       to,
+      onFrom,
+      onTo,
     })
     this.setup();
   }
@@ -59,12 +61,15 @@ export default class RoundTripCommander extends CommanderBase {
   }
   onComplete() {
     super.onComplete();
+    const { onFrom, onTo } = this;
     switch (this.tripState) {
       case TRIP_STATE_PING:
         this.tripState = TRIP_STATE_PONG;
+        onTo();
         break;
       case TRIP_STATE_PONG:
         this.tripState = TRIP_STATE_PING;
+        onFrom();
         break;
     }
     const targetSection = this.getTargetSection();

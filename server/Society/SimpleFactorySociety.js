@@ -47,44 +47,72 @@ export default class SimpleFactorySociety extends SocietyBase {
 
       }
     }
+    //作業用変数
+    const outletCarriers = []
+    {
+      //一旦一箇所バージョン
+      const section = grid.findSectionByTag("[10,9]");
+      const deliveryPlace = new DeliveryPlace();
+      deliveryPlace.sections.push(section);
+      deliveryPlaces.push(deliveryPlace);
+      const carrier = new MultipleCarrier({ emitter });
+      deliveryPlace.carrier = carrier;
+      this.carriers.push(carrier);
+      outletCarriers.push(carrier);
+    }
 
-
-    for (let i = 0; i < 20; ++i) {
-      if (i < sections.length) {
-        const section = sections[i];
+    {
+      //静的な構造なのでnullチェックしない。
+      const tripPlans = [];
+      for (let i = 0; i < 5 * 4; ++i) {
+        const tripPlan = {
+          deliveryPlaceFrom: deliveryPlaces[i],
+          deliveryPlaceTo: this.filterDeliveryPlaceByCarrier(outletCarriers[0])[0],
+        };
+        tripPlans.push(tripPlan);
+      }
+      for (let tripPlan of tripPlans) {
+        const { deliveryPlaceFrom, deliveryPlaceTo } = tripPlan;
+        const from = this.filterSectionsByDeliveryPlace(deliveryPlaceFrom)[0];
+        const to = this.filterSectionsByDeliveryPlace(deliveryPlaceTo)[0];
         const car = new Car({ emitter });
-        car.position.copy(section.position);
-        section.enter(car);
-        car.userData.section = section;
+        car.position.copy(from.position);
+        from.enter(car);
+        car.userData.section = from;
 
         const carrier = new SingleCarrier({ emitter });
         car.carrier = carrier;
         this.carriers.push(carrier);
 
+        const commander = new RoundTripCommander({
+          car,
+          sections,
+          from,
+          to,
+          onFrom: () => {
+            //コピーする
+            const parts = deliveryPlaceFrom.carrier.getAllParts().filter((part) => !!part).map((part) => part.clone());
+            for (let part of parts) {
+              carrier.add(part);
+            }
+          },
+          onTo: () => {
+            //チェックなしで上書き
+            const parts = carrier.getAllParts().filter((part) => !!part);
 
-        const from = sections[0];
-        const to = sections[sections.length - 1];
+            for (let part of parts) {
+              carrier.remove(part);
+              deliveryPlaceTo.carrier.add(part);
+            }
 
-        let commander = null;
-        if (false) {
-          commander = new RandomWalkCommander({
-            car,
-            sections,
-          });
-
-        } else {
-          commander = new RoundTripCommander({
-            car,
-            sections,
-            from,
-            to,
-          });
-
-        }
+          },
+        });
         commanders.push(commander);
 
         cars.push(car);
+
       }
+
     }
 
 

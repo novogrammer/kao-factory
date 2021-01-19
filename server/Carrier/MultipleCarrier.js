@@ -88,11 +88,13 @@ export default class MultipleCarrier extends CarrierBase {
     }
     part.carrier = this;
     this[name] = part;
+    this.emitAdded(part);
   }
   removeWithPartName(part, name) {
     if (part == this[name]) {
       part.carrier = null;
       this[name] = null;
+      this.emitRemoved(part);
     }
   }
 
