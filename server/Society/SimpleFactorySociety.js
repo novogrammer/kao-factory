@@ -51,25 +51,38 @@ export default class SimpleFactorySociety extends SocietyBase {
     const outletCarriers = []
     {
       //一旦一箇所バージョン
-      const section = grid.findSectionByTag("[10,9]");
-      const deliveryPlace = new DeliveryPlace();
-      deliveryPlace.sections.push(section);
-      deliveryPlaces.push(deliveryPlace);
-      const carrier = new MultipleCarrier({ emitter });
-      deliveryPlace.carrier = carrier;
-      this.carriers.push(carrier);
-      outletCarriers.push(carrier);
+      const outletSectionTags = [
+        "[2,9]",
+        "[7,9]",
+        "[12,9]",
+        "[17,9]",
+      ];
+      for (let outletSectionTag of outletSectionTags) {
+        const section = grid.findSectionByTag(outletSectionTag);
+        const deliveryPlace = new DeliveryPlace();
+        deliveryPlace.sections.push(section);
+        deliveryPlaces.push(deliveryPlace);
+        const carrier = new MultipleCarrier({ emitter });
+        deliveryPlace.carrier = carrier;
+        this.carriers.push(carrier);
+        outletCarriers.push(carrier);
+
+      }
+
     }
 
     {
       //静的な構造なのでnullチェックしない。
       const tripPlans = [];
-      for (let i = 0; i < 5 * 4; ++i) {
-        const tripPlan = {
-          deliveryPlaceFrom: deliveryPlaces[i],
-          deliveryPlaceTo: this.filterDeliveryPlaceByCarrier(outletCarriers[0])[0],
-        };
-        tripPlans.push(tripPlan);
+      for (let i = 0; i < 4; ++i) {
+        for (let j = 0; j < 5; ++j) {
+          const tripPlan = {
+            deliveryPlaceFrom: deliveryPlaces[i * 5 + j],
+            deliveryPlaceTo: this.filterDeliveryPlaceByCarrier(outletCarriers[(i + j) % 4])[0],
+          };
+          tripPlans.push(tripPlan);
+
+        }
       }
       for (let tripPlan of tripPlans) {
         const { deliveryPlaceFrom, deliveryPlaceTo } = tripPlan;
