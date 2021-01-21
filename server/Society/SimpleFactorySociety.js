@@ -5,6 +5,7 @@ import Car from "../Car/Car";
 import OsakaGridNetwork from "../Network/OsakaGridNetwork";
 import RandomWalkCommander from "../Commander/RandomWalkCommander";
 import RoundTripCommander from "../Commander/RoundTripCommander";
+import TourCommander from "../Commander/TourCommander";
 
 
 import SocietyBase from "./SocietyBase";
@@ -97,28 +98,34 @@ export default class SimpleFactorySociety extends SocietyBase {
         car.carrier = carrier;
         this.carriers.push(carrier);
 
-        const commander = new RoundTripCommander({
+        const places = [
+          {
+            section: from,
+            onArrival: () => {
+              //コピーする
+              const parts = deliveryPlaceFrom.carrier.getAllParts().filter((part) => !!part).map((part) => part.clone());
+              for (let part of parts) {
+                carrier.add(part);
+              }
+            }
+          },
+          {
+            section: to,
+            onArrival: () => {
+              //チェックなしで上書き
+              const parts = carrier.getAllParts().filter((part) => !!part);
+
+              for (let part of parts) {
+                carrier.remove(part);
+                deliveryPlaceTo.carrier.add(part);
+              }
+            }
+          },
+        ];
+        const commander = new TourCommander({
           car,
           sections,
-          from,
-          to,
-          onFrom: () => {
-            //コピーする
-            const parts = deliveryPlaceFrom.carrier.getAllParts().filter((part) => !!part).map((part) => part.clone());
-            for (let part of parts) {
-              carrier.add(part);
-            }
-          },
-          onTo: () => {
-            //チェックなしで上書き
-            const parts = carrier.getAllParts().filter((part) => !!part);
-
-            for (let part of parts) {
-              carrier.remove(part);
-              deliveryPlaceTo.carrier.add(part);
-            }
-
-          },
+          places,
         });
         commanders.push(commander);
 
