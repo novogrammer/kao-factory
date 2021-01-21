@@ -4,7 +4,6 @@ import * as THREE from "three";
 import Car from "../Car/Car";
 import OsakaGridNetwork from "../Network/OsakaGridNetwork";
 import RandomWalkCommander from "../Commander/RandomWalkCommander";
-import RoundTripCommander from "../Commander/RoundTripCommander";
 import TourCommander from "../Commander/TourCommander";
 
 
