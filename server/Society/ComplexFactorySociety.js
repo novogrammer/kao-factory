@@ -60,8 +60,8 @@ export default class ComplexFactorySociety extends SocietyBase {
       const inletSectionTagsList = [
         { x: 2, y: 2 },
         { x: 6, y: 2 },
-        { x: 2, y: 6 },
-        { x: 6, y: 6 },
+        { x: 1, y: 7 },
+        { x: 7, y: 7 },
       ].map(({ x, y }) => [
         `[${x},${y}]`,
       ]);
@@ -91,10 +91,10 @@ export default class ComplexFactorySociety extends SocietyBase {
     {
       //一旦一箇所バージョン
       const outletSectionTags = [
-        "[2,1]",
-        "[6,1]",
-        "[2,7]",
-        "[6,7]",
+        "[2,2]",
+        "[6,2]",
+        "[1,7]",
+        "[7,7]",
       ];
       for (let outletSectionTag of outletSectionTags) {
         const section = grid2.findSectionByTag(outletSectionTag);
