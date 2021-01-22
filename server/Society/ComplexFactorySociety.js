@@ -6,6 +6,7 @@ import OsakaGridNetwork from "../Network/OsakaGridNetwork";
 import RandomWalkCommander from "../Commander/RandomWalkCommander";
 import TourCommander from "../Commander/TourCommander";
 
+import LineSegment from "../Segment/LineSegment";
 
 import SocietyBase from "./SocietyBase";
 import MultipleCarrier from "../Carrier/MultipleCarrier";
@@ -19,16 +20,47 @@ export default class ComplexFactorySociety extends SocietyBase {
   setup() {
     const { cars, commanders, emitter, deliveryPlaces } = this;
 
-    const grid = new OsakaGridNetwork(20, 10, 1.5);
-    this.sections = this.sections.concat(grid.sections);;
+    const gridLength = 2;
+
+    const grid1 = new OsakaGridNetwork(11, 11, gridLength);
+    {
+      const offset = new THREE.Vector3(gridLength * (-5.5), 0, 0);
+      for (let section of grid1.sections) {
+        section.position.add(offset);
+      }
+    }
+    const grid2 = new OsakaGridNetwork(11, 11, gridLength);
+    {
+      const offset = new THREE.Vector3(gridLength * (+5.5), 0, 0);
+      for (let section of grid2.sections) {
+        section.position.add(offset);
+      }
+    }
+
+    {
+      let from = grid1.findSectionByTag("[10,2]");
+      let to = grid2.findSectionByTag("[0,2]");
+      let segment = new LineSegment({ from, to });
+      from.segments.push(segment);
+
+    }
+    {
+      let from = grid2.findSectionByTag("[0,8]");
+      let to = grid1.findSectionByTag("[10,8]");
+      let segment = new LineSegment({ from, to });
+      from.segments.push(segment);
+
+    }
+
+    this.sections = this.sections.concat(grid1.sections).concat(grid2.sections);;
     const { sections } = this;
 
     {
       const inletSectionTagsList = [
-        ["[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",],
-        ["[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",],
-        ["[10,0]", "[11,0]", "[12,0]", "[13,0]", "[14,0]",],
-        ["[15,0]", "[16,0]", "[17,0]", "[18,0]", "[19,0]",],
+        ["[0,1]", "[1,1]", "[2,1]", "[3,1]", "[4,1]",],
+        ["[5,1]", "[6,1]", "[7,1]", "[8,1]", "[9,1]",],
+        ["[0,9]", "[1,9]", "[2,9]", "[3,9]", "[4,9]",],
+        ["[5,9]", "[6,9]", "[7,9]", "[8,9]", "[9,9]",],
       ];
       for (let i = 0; i < inletSectionTagsList.length; ++i) {
         const inletSectionTags = inletSectionTagsList[i];
@@ -41,7 +73,7 @@ export default class ComplexFactorySociety extends SocietyBase {
 
         for (let j = 0; j < inletSectionTags.length; ++j) {
           const inletSectionTag = inletSectionTags[j];
-          const section = grid.findSectionByTag(inletSectionTag);
+          const section = grid1.findSectionByTag(inletSectionTag);
           if (!section) {
             throw new Error("section not found. inletSectionTag:" + inletSectionTag);
           }
@@ -56,13 +88,13 @@ export default class ComplexFactorySociety extends SocietyBase {
     {
       //一旦一箇所バージョン
       const outletSectionTags = [
+        "[2,1]",
+        "[7,1]",
         "[2,9]",
         "[7,9]",
-        "[12,9]",
-        "[17,9]",
       ];
       for (let outletSectionTag of outletSectionTags) {
-        const section = grid.findSectionByTag(outletSectionTag);
+        const section = grid2.findSectionByTag(outletSectionTag);
         const deliveryPlace = new DeliveryPlace();
         deliveryPlace.sections.push(section);
         deliveryPlaces.push(deliveryPlace);
