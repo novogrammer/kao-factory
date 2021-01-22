@@ -43,6 +43,7 @@ import {
 import OsakaSociety from "./Society/OsakaSociety";
 import OsakaLayersSociety from "./Society/OsakaLayersSociety";
 import SimpleFactorySociety from "./Society/SimpleFactorySociety";
+import ComplexFactorySociety from "./Society/ComplexFactorySociety";
 import PartContour from "./Part/PartContour";
 import PartLeftEye from "./Part/PartLeftEye";
 import PartRightEye from "./Part/PartRightEye";
@@ -96,9 +97,13 @@ export default class ServerApp {
     // this.society = new OsakaLayersSociety({
     //   emitter: this.emitter,
     // });
-    this.society = new SimpleFactorySociety({
+    // this.society = new SimpleFactorySociety({
+    //   emitter: this.emitter,
+    // });
+    this.society = new ComplexFactorySociety({
       emitter: this.emitter,
     });
+
 
 
     try {
