@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+ 顔工場
+=====================
 
-## Getting Started
+HOMEWORKS2020（2021/1/23 〜 2021/1/24 PINEBROOKLYN）で展示した「顔工場」のプログラムです。
 
-First, run the development server:
+[当日資料.md](当日資料.md)
 
-```bash
-npm run dev
-# or
-yarn dev
+## 環境構築
+
+node.js（12.16.2で実行）
+
+```
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## デバッグ実行
+```
+$ npm run dev
+```
+http://localhost:3000/ へアクセスする。
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## 実行
+```
+$ npm run build
+$ npm run start
+```
+http://localhost:3000/ へアクセスする。
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## 「顔工場」の説明文
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+来場者の顔をパーツとして仕入れて顔を組み立てて出荷する工場です。
 
-## Learn More
+工場や倉庫内をうろうろする搬送ロボットが可愛く見えたので、プログラミングしました。
+インタラクションとして顔を入力することにし、工場の目的として顔を組み立てることにしました。
 
-To learn more about Next.js, take a look at the following resources:
+複数画面で工場の様子を確認できるようにするため、node.jsとsocket.ioベースのサーバークライアントシステムにし、複数ブラウザで連動する仕組みにしました。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+顔の検出はtensorflow.jsで扱えるface-landmarks-detectionを使い、Webカメラの情報から3Dメッシュを生成しています。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
