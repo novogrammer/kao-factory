@@ -53,12 +53,14 @@ export default class FactoryClientApp extends ClientAppBase {
    * @override
    */
   async setupAsync(params) {
-    const { view, position } = params;
+    const { view, position, lookat, fovy } = params;
     const facePromiseAndResolveStore = {};
     const faceResourcePromiseStore = {};
     Object.assign(this, {
       view,
       position,
+      lookat,
+      fovy,
       facePromiseAndResolveStore,
       faceResourcePromiseStore,
     });
@@ -354,11 +356,11 @@ export default class FactoryClientApp extends ClientAppBase {
 
 
   setupThree() {
-    const { view, position } = this;
+    const { view, position, lookat, fovy } = this;
 
     const scene = new THREE.Scene();
     const size = this.getSize();
-    const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(fovy, size.width / size.height, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer({
       canvas: view,
@@ -380,7 +382,6 @@ export default class FactoryClientApp extends ClientAppBase {
 
     camera.position.z = 20;
     camera.position.y = 20;
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     {
       const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
@@ -412,6 +413,8 @@ export default class FactoryClientApp extends ClientAppBase {
       deliveryPlaces,
     };
     this.updatePosition(position);
+    this.updateLookat(lookat);
+    this.updateFovy(fovy);
 
   }
   destroyThree() {
@@ -536,4 +539,14 @@ export default class FactoryClientApp extends ClientAppBase {
     this.position = position;
 
   }
+  updateLookat(lookat) {
+    const { camera } = this.three;
+    camera.lookAt(new THREE.Vector3().copy(lookat));
+  }
+  updateFovy(fovy) {
+    const { camera } = this.three;
+    camera.fov = fovy;
+    camera.updateProjectionMatrix();
+  }
+
 }

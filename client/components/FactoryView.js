@@ -16,20 +16,24 @@ export default class FactoryView extends React.Component {
     const view = this.viewRef.current;
     const { addLogText, clearLogText } = this.context;
 
-    const { position } = this.props;
+    const { position, lookat, fovy } = this.props;
 
     this.factoryApp = new FactoryClientApp({
       view,
       addLogText,
       clearLogText,
       position,
+      lookat,
+      fovy,
     });
     await this.factoryApp.setupPromise;
   }
   componentDidUpdate() {
     console.log("FactoryView#componentDidUpdate");
-    const { position } = this.props;
+    const { position, lookat, fovy } = this.props;
     this.factoryApp.updatePosition(position);
+    this.factoryApp.updateLookat(lookat);
+    this.factoryApp.updateFovy(fovy);
   }
   componentWillUnmount() {
     console.log("FactoryView#componentWillUnmount");

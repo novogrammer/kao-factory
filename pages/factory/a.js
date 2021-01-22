@@ -3,10 +3,12 @@ import FactoryLayout from "../../client/layouts/FactoryLayout";
 
 
 function FactoryAPage() {
-  const position = { x: -3, y: 10, z: 10 };
+  const position = { x: -10, y: 5, z: 17 };
+  const lookat = { x: -10, y: 4, z: 0 };
+  const fovy = 60;
 
   return (
-    <Factory position={position}></Factory>
+    <Factory position={position} lookat={lookat} fovy={fovy}></Factory>
   );
 }
 
