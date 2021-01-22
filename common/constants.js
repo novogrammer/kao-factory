@@ -6,7 +6,7 @@ export const ROOM_DEBUG = "debug";
 export const ROOM_ENTRY = "entry";
 export const ROOM_FACTORY = "factory";
 
-export const FPS_ENTRY = 10;
+export const FPS_ENTRY = 5;
 export const FPS_FACTORY = 60;
 export const FPS_SERVER = 10;
 
