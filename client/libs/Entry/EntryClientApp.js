@@ -12,7 +12,7 @@ import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detec
 import * as tf from '@tensorflow/tfjs-core';
 
 import * as tfjsWebgl from '@tensorflow/tfjs-backend-webgl';
-
+// import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
 
 
 import { TRIANGULATION } from "./triangulation";
@@ -166,6 +166,9 @@ export default class EntryClientApp extends ClientAppBase {
     const packageConfig = {
       maxFaces: 1,
     };
+    // tfjsWasm.setWasmPaths(
+    //   `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjsWasm.version_wasm}/dist/`);
+    // await tf.setBackend("wasm");
     const model = await faceLandmarksDetection.load(
       faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
       packageConfig
