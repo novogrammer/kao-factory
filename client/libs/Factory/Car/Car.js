@@ -4,6 +4,7 @@ import {
 } from "../../three_utils";
 
 import gsap from "gsap";
+import { CAR_HEIGHT } from "../../../../common/constants";
 
 
 // const UP_VECTOR = new THREE.Vector3(0, 1, 0);
@@ -12,8 +13,18 @@ import gsap from "gsap";
 export default class Car extends THREE.Group {
   constructor(id) {
     super();
-    const body = makeCube(1, 0x00ff00);
-    const head = makeCube(0.25, 0xff0000);
+    let body = null;
+    {
+      let geometry = new THREE.BoxGeometry(1, CAR_HEIGHT, 1);
+      let material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+      });
+      let mesh = new THREE.Mesh(geometry, material);
+      mesh.position.y += CAR_HEIGHT / 2;
+      body = mesh;
+
+    }
+    const head = makeCube(0.2, 0x0000ff);
     head.position.z = -0.5;
     body.add(head);
     this.add(body);

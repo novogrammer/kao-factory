@@ -16,6 +16,7 @@ import {
   PART_KIND_MOUTH,
   EVENT_NOTIFY_PART_ADDED,
   EVENT_NOTIFY_PART_REMOVED,
+  CAR_HEIGHT,
 } from "../../../common/constants";
 
 import ClientAppBase from "../ClientAppBase";
@@ -470,6 +471,7 @@ export default class FactoryClientApp extends ClientAppBase {
       const { carrier } = car.userData;
       if (carrier) {
         carrier.position.copy(car.getWorldPosition(new THREE.Vector3()));
+        carrier.position.y += CAR_HEIGHT;
       }
     }
 

@@ -38,6 +38,7 @@ export const FACE_INDEX_FACE_BOTTOM = 152;
 export const FACE_HEIGHT = 10;
 export const Z_OFFSET_PART = 0.3;
 export const Z_OFFSET_MASK = 0.001;
+export const CAR_HEIGHT = 0.5;
 
 
 export const DATA_DIR = "data/";
