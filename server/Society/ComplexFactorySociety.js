@@ -12,6 +12,7 @@ import SocietyBase from "./SocietyBase";
 import MultipleCarrier from "../Carrier/MultipleCarrier";
 import SingleCarrier from "../Carrier/SingleCarrier";
 import DeliveryPlace from "../DeliveryPlace/DeliveryPlace";
+import { PART_KIND_LIST } from "../../common/constants";
 
 export default class ComplexFactorySociety extends SocietyBase {
   constructor(params) {
@@ -63,10 +64,6 @@ export default class ComplexFactorySociety extends SocietyBase {
         { x: 6, y: 6 },
       ].map(({ x, y }) => [
         `[${x},${y}]`,
-        `[${x + 1},${y}]`,
-        `[${x - 1},${y}]`,
-        `[${x},${y - 1}]`,
-        `[${x},${y + 1}]`,
       ]);
       for (let i = 0; i < inletSectionTagsList.length; ++i) {
         const inletSectionTags = inletSectionTagsList[i];
@@ -116,12 +113,11 @@ export default class ComplexFactorySociety extends SocietyBase {
     {
       //静的な構造なのでnullチェックしない。
       const tripPlans = [];
-      for (let i = 0; i < 4; ++i) {
-        for (let j = 0; j < 5; ++j) {
+      for (let i = 0; i < this.inletCarriers.length; ++i) {
+        for (let j = 0; j < PART_KIND_LIST.length; ++j) {
           const tripPlan = {
-            sectionFrom: this.filterDeliveryPlaceByCarrier(this.inletCarriers[i])[0].sections[j],
+            sectionFrom: this.filterDeliveryPlaceByCarrier(this.inletCarriers[i])[0].sections[0],
             sectioneTo: this.filterDeliveryPlaceByCarrier(outletCarriers[(i + j) % 4])[0].sections[0],
-            partIndexFrom: j,
           };
           tripPlans.push(tripPlan);
 
@@ -132,9 +128,10 @@ export default class ComplexFactorySociety extends SocietyBase {
         const deliveryPlaceFrom = this.filterDeliveryPlaceBySection(sectionFrom)[0];
         const deliveryPlaceTo = this.filterDeliveryPlaceBySection(sectioneTo)[0];
         const car = new Car({ emitter });
-        car.position.copy(sectionFrom.position);
-        sectionFrom.enter(car);
-        car.userData.section = sectionFrom;
+        const initialSection = sections[cars.length];
+        car.position.copy(initialSection.position);
+        initialSection.enter(car);
+        car.userData.section = initialSection;
 
         const carrier = new SingleCarrier({ emitter });
         car.carrier = carrier;
@@ -144,7 +141,8 @@ export default class ComplexFactorySociety extends SocietyBase {
           {
             section: sectionFrom,
             onArrival: () => {
-              //MultipleCarrierから指定パーツのみコピーする
+              //MultipleCarrierからランダムにコピーする
+              const partIndexFrom = Math.floor(Math.random() * PART_KIND_LIST.length)
               const parts = deliveryPlaceFrom.carrier.getAllParts()
                 .filter((part, index) => index == partIndexFrom)
                 .filter((part) => !!part)
