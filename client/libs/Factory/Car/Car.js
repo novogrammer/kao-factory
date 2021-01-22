@@ -24,7 +24,7 @@ export default class Car extends THREE.Group {
       body = mesh;
 
     }
-    const head = makeCube(0.2, 0x0000ff);
+    const head = makeCube(0.2, 0xff0000);
     head.position.z = -0.5;
     body.add(head);
     this.add(body);
