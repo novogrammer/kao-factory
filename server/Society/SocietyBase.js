@@ -17,12 +17,9 @@ export default class SocietyBase {
     const inletFaces = [];
     const inletFaceNextIndex = 0;
     const inletCarriers = [];
-    const partKindQty = PART_KIND_LIST.length;
     for (let i = 0; i < INLET_FACES_QTY; ++i) {
       inletFaces[i] = null;
-      for (let j = 0; j < partKindQty; ++j) {
-        inletCarriers[i * partKindQty + j] = null;
-      }
+      inletCarriers[i] = null;
     }
 
     Object.assign(this, {
@@ -67,6 +64,12 @@ export default class SocietyBase {
       return deliveryPlace.carrier == carrier;
     })
   }
+  filterDeliveryPlaceBySection(section) {
+    return this.deliveryPlaces.filter((deliveryPlace) => {
+      return deliveryPlace.sections.some((sectionInDeliveryPlace) => sectionInDeliveryPlace == section);
+    })
+
+  }
   setInletFace(place, face) {
     this.addFace(face);
     this.inletFaces[place] = face;
@@ -83,7 +86,7 @@ export default class SocietyBase {
       throw new Error("partKindQty != PartClassList.length");
     }
     for (let i = 0; i < partKindQty; ++i) {
-      const carrier = this.inletCarriers[place * partKindQty + i];
+      const carrier = this.inletCarriers[place];
       const PartClass = PartClassList[i];
       const part = new PartClass(face.hash);
       carrier.add(part);

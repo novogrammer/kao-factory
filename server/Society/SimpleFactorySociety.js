@@ -24,26 +24,30 @@ export default class SimpleFactorySociety extends SocietyBase {
     const { sections } = this;
 
     {
-      const inletSectionTags = [
-        "[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",
-        "[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",
-        "[10,0]", "[11,0]", "[12,0]", "[13,0]", "[14,0]",
-        "[15,0]", "[16,0]", "[17,0]", "[18,0]", "[19,0]",
+      const inletSectionTagsList = [
+        ["[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",],
+        ["[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",],
+        ["[10,0]", "[11,0]", "[12,0]", "[13,0]", "[14,0]",],
+        ["[15,0]", "[16,0]", "[17,0]", "[18,0]", "[19,0]",],
       ];
-      for (let i = 0; i < inletSectionTags.length; ++i) {
-        const inletSectionTag = inletSectionTags[i];
-        const section = grid.findSectionByTag(inletSectionTag);
-        if (!section) {
-          throw new Error("section not found. inletSectionTag:" + inletSectionTag);
-        }
+      for (let i = 0; i < inletSectionTagsList.length; ++i) {
+        const inletSectionTags = inletSectionTagsList[i];
         const deliveryPlace = new DeliveryPlace();
-        deliveryPlace.sections.push(section);
         deliveryPlaces.push(deliveryPlace);
-
-        const carrier = new SingleCarrier({ emitter });
+        const carrier = new MultipleCarrier({ emitter });
         deliveryPlace.carrier = carrier;
         this.carriers.push(carrier);
         this.inletCarriers[i] = carrier;
+
+        for (let j = 0; j < inletSectionTags.length; ++j) {
+          const inletSectionTag = inletSectionTags[j];
+          const section = grid.findSectionByTag(inletSectionTag);
+          if (!section) {
+            throw new Error("section not found. inletSectionTag:" + inletSectionTag);
+          }
+          deliveryPlace.sections.push(section);
+
+        }
 
       }
     }
@@ -77,21 +81,22 @@ export default class SimpleFactorySociety extends SocietyBase {
       for (let i = 0; i < 4; ++i) {
         for (let j = 0; j < 5; ++j) {
           const tripPlan = {
-            deliveryPlaceFrom: deliveryPlaces[i * 5 + j],
-            deliveryPlaceTo: this.filterDeliveryPlaceByCarrier(outletCarriers[(i + j) % 4])[0],
+            sectionFrom: this.filterDeliveryPlaceByCarrier(this.inletCarriers[i])[0].sections[j],
+            sectioneTo: this.filterDeliveryPlaceByCarrier(outletCarriers[(i + j) % 4])[0].sections[0],
+            partIndexFrom: j,
           };
           tripPlans.push(tripPlan);
 
         }
       }
       for (let tripPlan of tripPlans) {
-        const { deliveryPlaceFrom, deliveryPlaceTo } = tripPlan;
-        const from = this.filterSectionsByDeliveryPlace(deliveryPlaceFrom)[0];
-        const to = this.filterSectionsByDeliveryPlace(deliveryPlaceTo)[0];
+        const { sectionFrom, sectioneTo, partIndexFrom } = tripPlan;
+        const deliveryPlaceFrom = this.filterDeliveryPlaceBySection(sectionFrom)[0];
+        const deliveryPlaceTo = this.filterDeliveryPlaceBySection(sectioneTo)[0];
         const car = new Car({ emitter });
-        car.position.copy(from.position);
-        from.enter(car);
-        car.userData.section = from;
+        car.position.copy(sectionFrom.position);
+        sectionFrom.enter(car);
+        car.userData.section = sectionFrom;
 
         const carrier = new SingleCarrier({ emitter });
         car.carrier = carrier;
@@ -99,17 +104,20 @@ export default class SimpleFactorySociety extends SocietyBase {
 
         const places = [
           {
-            section: from,
+            section: sectionFrom,
             onArrival: () => {
-              //コピーする
-              const parts = deliveryPlaceFrom.carrier.getAllParts().filter((part) => !!part).map((part) => part.clone());
+              //MultipleCarrierから指定パーツのみコピーする
+              const parts = deliveryPlaceFrom.carrier.getAllParts()
+                .filter((part, index) => index == partIndexFrom)
+                .filter((part) => !!part)
+                .map((part) => part.clone());
               for (let part of parts) {
                 carrier.add(part);
               }
             }
           },
           {
-            section: to,
+            section: sectioneTo,
             onArrival: () => {
               //チェックなしで上書き
               const parts = carrier.getAllParts().filter((part) => !!part);

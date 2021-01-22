@@ -47,26 +47,30 @@ export default class OsakaLayersSociety extends SocietyBase {
     const { sections } = this;
 
     {
-      const inletSectionTags = [
-        "[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",
-        "[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",
-        "[0,1]", "[1,1]", "[2,1]", "[3,1]", "[4,1]",
-        "[5,1]", "[6,1]", "[7,1]", "[8,1]", "[9,1]",
+      const inletSectionTagsList = [
+        ["[0,0]", "[1,0]", "[2,0]", "[3,0]", "[4,0]",],
+        ["[5,0]", "[6,0]", "[7,0]", "[8,0]", "[9,0]",],
+        ["[0,1]", "[1,1]", "[2,1]", "[3,1]", "[4,1]",],
+        ["[5,1]", "[6,1]", "[7,1]", "[8,1]", "[9,1]",],
       ];
-      for (let i = 0; i < inletSectionTags.length; ++i) {
-        const inletSectionTag = inletSectionTags[i];
-        const section = grid1.findSectionByTag(inletSectionTag);
-        if (!section) {
-          throw new Error("section not found. inletSectionTag:" + inletSectionTag);
-        }
+      for (let i = 0; i < inletSectionTagsList.length; ++i) {
+        const inletSectionTags = inletSectionTagsList[i];
         const deliveryPlace = new DeliveryPlace();
-        deliveryPlace.sections.push(section);
         deliveryPlaces.push(deliveryPlace);
-
-        const carrier = new SingleCarrier({ emitter });
+        const carrier = new MultipleCarrier({ emitter });
         deliveryPlace.carrier = carrier;
         this.carriers.push(carrier);
         this.inletCarriers[i] = carrier;
+
+        for (let j = 0; j < inletSectionTags.length; ++j) {
+          const inletSectionTag = inletSectionTags[j];
+          const section = grid1.findSectionByTag(inletSectionTag);
+          if (!section) {
+            throw new Error("section not found. inletSectionTag:" + inletSectionTag);
+          }
+          deliveryPlace.sections.push(section);
+
+        }
 
       }
     }
