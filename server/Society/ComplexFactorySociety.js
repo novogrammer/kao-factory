@@ -22,31 +22,31 @@ export default class ComplexFactorySociety extends SocietyBase {
 
     const gridLength = 2;
 
-    const grid1 = new OsakaGridNetwork(11, 11, gridLength);
+    const grid1 = new OsakaGridNetwork(9, 9, gridLength);
     {
-      const offset = new THREE.Vector3(gridLength * (-5.5), 0, 0);
+      const offset = new THREE.Vector3(gridLength * (-5), 0, 0);
       for (let section of grid1.sections) {
         section.position.add(offset);
       }
     }
-    const grid2 = new OsakaGridNetwork(11, 11, gridLength);
+    const grid2 = new OsakaGridNetwork(9, 9, gridLength);
     {
-      const offset = new THREE.Vector3(gridLength * (+5.5), 0, 0);
+      const offset = new THREE.Vector3(gridLength * (+5), 0, 0);
       for (let section of grid2.sections) {
         section.position.add(offset);
       }
     }
 
     {
-      let from = grid1.findSectionByTag("[10,2]");
+      let from = grid1.findSectionByTag("[8,2]");
       let to = grid2.findSectionByTag("[0,2]");
       let segment = new LineSegment({ from, to });
       from.segments.push(segment);
 
     }
     {
-      let from = grid2.findSectionByTag("[0,8]");
-      let to = grid1.findSectionByTag("[10,8]");
+      let from = grid2.findSectionByTag("[0,6]");
+      let to = grid1.findSectionByTag("[8,6]");
       let segment = new LineSegment({ from, to });
       from.segments.push(segment);
 
@@ -57,11 +57,17 @@ export default class ComplexFactorySociety extends SocietyBase {
 
     {
       const inletSectionTagsList = [
-        ["[0,1]", "[1,1]", "[2,1]", "[3,1]", "[4,1]",],
-        ["[5,1]", "[6,1]", "[7,1]", "[8,1]", "[9,1]",],
-        ["[0,9]", "[1,9]", "[2,9]", "[3,9]", "[4,9]",],
-        ["[5,9]", "[6,9]", "[7,9]", "[8,9]", "[9,9]",],
-      ];
+        { x: 2, y: 2 },
+        { x: 6, y: 2 },
+        { x: 2, y: 6 },
+        { x: 6, y: 6 },
+      ].map(({ x, y }) => [
+        `[${x},${y}]`,
+        `[${x + 1},${y}]`,
+        `[${x - 1},${y}]`,
+        `[${x},${y - 1}]`,
+        `[${x},${y + 1}]`,
+      ]);
       for (let i = 0; i < inletSectionTagsList.length; ++i) {
         const inletSectionTags = inletSectionTagsList[i];
         const deliveryPlace = new DeliveryPlace();
@@ -89,9 +95,9 @@ export default class ComplexFactorySociety extends SocietyBase {
       //一旦一箇所バージョン
       const outletSectionTags = [
         "[2,1]",
-        "[7,1]",
-        "[2,9]",
-        "[7,9]",
+        "[6,1]",
+        "[2,7]",
+        "[6,7]",
       ];
       for (let outletSectionTag of outletSectionTags) {
         const section = grid2.findSectionByTag(outletSectionTag);
