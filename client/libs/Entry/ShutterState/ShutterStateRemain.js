@@ -1,6 +1,7 @@
 import ShutterStateBase from "./ShutterStateBase";
 
 import gsap from "gsap";
+import { FACE_SIZE_TO_ENTRY } from "../../../../common/constants";
 
 
 export default class ShutterStateRemain extends ShutterStateBase {
@@ -26,7 +27,7 @@ export default class ShutterStateRemain extends ShutterStateBase {
    */
   onTick(deltaTime) {
     const { ShutterStateReady } = this.context.ClassMap;
-    if (this.context.faceCount == 0) {
+    if (!(0 < this.context.faceCount && FACE_SIZE_TO_ENTRY <= this.context.faceSize)) {
       this.context.setNextShutterState(new ShutterStateReady(this.context));
     }
 

@@ -13,6 +13,8 @@ export const FPS_SERVER = 10;
 export const VIDEO_SIZE = 512;
 // export const VIDEO_SIZE = 256;
 
+export const FACE_SIZE_TO_ENTRY = 0.7;
+
 export const JPEG_QUALITY = 9.5;
 
 export const INLET_FACES_QTY = 4;

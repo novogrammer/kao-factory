@@ -4,6 +4,7 @@ import {
   VIDEO_SIZE,
   EVENT_NOTIFY_UPLOAD_FACE,
   JPEG_QUALITY,
+  FACE_SIZE_TO_ENTRY,
 } from "../../../common/constants";
 
 import ClientAppBase from "../ClientAppBase";
@@ -61,6 +62,7 @@ export default class EntryClientApp extends ClientAppBase {
     } = params;
     const needsSend = false;
     const faceCount = 0;
+    const faceSize = 0;
     const ClassMap = {
       ShutterStateReady,
       ShutterStateCount,
@@ -77,6 +79,7 @@ export default class EntryClientApp extends ClientAppBase {
       remain,
       needsSend,
       faceCount,
+      faceSize,
       ClassMap,
       shutterState,
     });
@@ -204,6 +207,17 @@ export default class EntryClientApp extends ClientAppBase {
       input: videoImage,
     });
     this.faceCount = predictions.length;
+    if (0 < predictions.length) {
+      const prediction = predictions[0];
+      const { boundingBox } = prediction;
+      const { topLeft, bottomRight } = boundingBox;
+      const [left, top] = topLeft;
+      const [right, bottom] = bottomRight;
+      this.faceSize = (bottom - top) / VIDEO_SIZE;
+      console.log(this.faceSize);
+    } else {
+      this.faceSize = 0;
+    }
 
     if (this.shutterState) {
       this.shutterState.onTick(1 / FPS_ENTRY);
@@ -228,6 +242,7 @@ export default class EntryClientApp extends ClientAppBase {
       view,
       // video,
       videoImage,
+      faceSize,
     } = this;
     viewCtx.drawImage(
       videoImage,
@@ -235,13 +250,18 @@ export default class EntryClientApp extends ClientAppBase {
       0, 0, view.width, view.height
     );
     if (0 < predictions.length) {
+      viewCtx.save();
+      if (FACE_SIZE_TO_ENTRY <= faceSize) {
+        viewCtx.strokeStyle = '#00ffff';
+        viewCtx.lineWidth = 0.5;
+
+      } else {
+        viewCtx.strokeStyle = '#ffffff';
+        viewCtx.lineWidth = 0.25;
+      }
       const prediction = predictions[0]
       const scaledKeypoints = prediction.scaledMesh;
 
-      viewCtx.save();
-      viewCtx.fillStyle = '#32EEDB';
-      viewCtx.strokeStyle = '#32EEDB';
-      viewCtx.lineWidth = 0.5;
       for (let j = 0; j < TRIANGULATION.length; j += 3) {
         const points = [
           TRIANGULATION[j + 0],

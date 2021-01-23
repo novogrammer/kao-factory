@@ -1,3 +1,4 @@
+import { FACE_SIZE_TO_ENTRY } from "../../../../common/constants";
 import ShutterStateBase from "./ShutterStateBase";
 
 export default class ShutterStateReady extends ShutterStateBase {
@@ -24,7 +25,7 @@ export default class ShutterStateReady extends ShutterStateBase {
   onTick(deltaTime) {
     const { ShutterStateCount } = this.context.ClassMap;
 
-    if (0 < this.context.faceCount) {
+    if (0 < this.context.faceCount && FACE_SIZE_TO_ENTRY <= this.context.faceSize) {
       this.context.setNextShutterState(new ShutterStateCount(this.context));
     }
   }
