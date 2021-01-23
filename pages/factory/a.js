@@ -6,9 +6,10 @@ function FactoryAPage() {
   const position = { x: -10, y: 5, z: 17 };
   const lookat = { x: -10, y: 4, z: 0 };
   const fovy = 60;
+  const facescale = 1;
 
   return (
-    <Factory position={position} lookat={lookat} fovy={fovy}></Factory>
+    <Factory position={position} lookat={lookat} fovy={fovy} facescale={facescale}></Factory>
   );
 }
 

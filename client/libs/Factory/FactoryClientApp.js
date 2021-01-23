@@ -54,7 +54,7 @@ export default class FactoryClientApp extends ClientAppBase {
    * @override
    */
   async setupAsync(params) {
-    const { view, position, lookat, fovy } = params;
+    const { view, position, lookat, fovy, facescale } = params;
     const facePromiseAndResolveStore = {};
     const faceResourcePromiseStore = {};
     Object.assign(this, {
@@ -62,6 +62,7 @@ export default class FactoryClientApp extends ClientAppBase {
       position,
       lookat,
       fovy,
+      facescale,
       facePromiseAndResolveStore,
       faceResourcePromiseStore,
     });
@@ -357,7 +358,7 @@ export default class FactoryClientApp extends ClientAppBase {
 
 
   setupThree() {
-    const { view, position, lookat, fovy } = this;
+    const { view, position, lookat, fovy, facescale } = this;
 
     const scene = new THREE.Scene();
     const size = this.getSize();
@@ -416,6 +417,7 @@ export default class FactoryClientApp extends ClientAppBase {
     this.updatePosition(position);
     this.updateLookat(lookat);
     this.updateFovy(fovy);
+    this.updateFacescale(facescale);
 
   }
   destroyThree() {
@@ -460,6 +462,7 @@ export default class FactoryClientApp extends ClientAppBase {
     this.render();
   }
   update() {
+    const { facescale } = this;
     const { carriers, camera, cars, deliveryPlaces } = this.three;
     const zeroVector = new THREE.Vector3();
     const v = camera.getWorldPosition(zeroVector);
@@ -472,6 +475,7 @@ export default class FactoryClientApp extends ClientAppBase {
       if (carrier) {
         carrier.position.copy(car.getWorldPosition(new THREE.Vector3()));
         carrier.position.y += CAR_HEIGHT;
+        carrier.scale.copy({ x: facescale, y: facescale, z: facescale });
       }
     }
 
@@ -480,6 +484,7 @@ export default class FactoryClientApp extends ClientAppBase {
       const { carrier } = deliveryPlace.userData;
       if (carrier) {
         carrier.position.copy(deliveryPlace.getWorldPosition(new THREE.Vector3()));
+        carrier.scale.copy({ x: facescale, y: facescale, z: facescale });
       }
     }
 
@@ -539,16 +544,30 @@ export default class FactoryClientApp extends ClientAppBase {
     const { camera } = this.three;
     camera.position.copy(position);
     this.position = position;
+    Object.assign(this, {
+      position,
+    });
 
   }
   updateLookat(lookat) {
     const { camera } = this.three;
     camera.lookAt(new THREE.Vector3().copy(lookat));
+    Object.assign(this, {
+      lookat,
+    });
   }
   updateFovy(fovy) {
     const { camera } = this.three;
     camera.fov = fovy;
     camera.updateProjectionMatrix();
+    Object.assign(this, {
+      fovy,
+    });
+  }
+  updateFacescale(facescale) {
+    Object.assign(this, {
+      facescale,
+    });
   }
 
 }

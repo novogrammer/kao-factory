@@ -23,6 +23,11 @@ export default class FactoryLayout extends React.Component {
         this.setState({ fovy });
       }
     };
+    const updateFacescale = (facescale) => {
+      if (this.state.facescale != facescale) {
+        this.setState({ facescale });
+      }
+    };
 
     this.state = {
       position: { x: 0, y: 0, z: 0 },
@@ -31,14 +36,16 @@ export default class FactoryLayout extends React.Component {
       updateLookat,
       fovy: 60,
       updateFovy,
+      facescale: 1,
+      updateFacescale,
     };
   }
   render() {
     const { children } = this.props;
-    const { position, lookat, fovy } = this.state;
+    const { position, lookat, fovy, facescale } = this.state;
     return (
       <CameraContext.Provider value={this.state}>
-        <FactoryView position={position} lookat={lookat} fovy={fovy}></FactoryView>
+        <FactoryView position={position} lookat={lookat} fovy={fovy} facescale={facescale}></FactoryView>
         <main>{children}</main>
       </CameraContext.Provider>
     );

@@ -16,7 +16,7 @@ export default class FactoryView extends React.Component {
     const view = this.viewRef.current;
     const { addLogText, clearLogText } = this.context;
 
-    const { position, lookat, fovy } = this.props;
+    const { position, lookat, fovy, facescale } = this.props;
 
     this.factoryApp = new FactoryClientApp({
       view,
@@ -25,15 +25,17 @@ export default class FactoryView extends React.Component {
       position,
       lookat,
       fovy,
+      facescale,
     });
     await this.factoryApp.setupPromise;
   }
   componentDidUpdate() {
     console.log("FactoryView#componentDidUpdate");
-    const { position, lookat, fovy } = this.props;
+    const { position, lookat, fovy, facescale } = this.props;
     this.factoryApp.updatePosition(position);
     this.factoryApp.updateLookat(lookat);
     this.factoryApp.updateFovy(fovy);
+    this.factoryApp.updateFacescale(facescale);
   }
   componentWillUnmount() {
     console.log("FactoryView#componentWillUnmount");

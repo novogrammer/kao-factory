@@ -8,6 +8,8 @@ const CameraContext = React.createContext({
   updateLookat: () => { },
   fovy: 60,
   updateFovy: () => { },
+  facescale: 1,
+  updateFacescale: () => { },
 
 });
 export default CameraContext;
