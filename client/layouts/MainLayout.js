@@ -37,6 +37,10 @@ export default function MainLayout({ children }) {
           console.log("space");
           $menu.slideToggle();
           break;
+        case "f":
+          console.log("f fullscreen");
+          document.body.requestFullscreen();
+          break;
         case "Escape":
           console.log("escape");
           $menu.slideUp();
