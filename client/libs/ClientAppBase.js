@@ -1,6 +1,7 @@
 import {
   EVENT_NOTIFY_DISPLAY_ERROR_LOG,
   EVENT_NOTIFY_CLEAR_ERROR_LOG,
+  IS_DEBUG,
 } from "../../common/constants";
 
 import Stats from "stats-js";
@@ -51,6 +52,9 @@ export default class ClientAppBase {
     stats.dom.style.left = "auto";
     stats.dom.style.right = "0";
     document.body.appendChild(stats.dom);
+    if (!IS_DEBUG) {
+      stats.dom.style.display = "none";
+    }
     this.stats = stats;
   }
   destroyStats() {

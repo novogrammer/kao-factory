@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export const IS_DEBUG = true;
+export const IS_DEBUG = false;
 
 export const ROOM_DEBUG = "debug";
 export const ROOM_ENTRY = "entry";
