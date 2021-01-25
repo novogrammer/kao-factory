@@ -3,7 +3,12 @@
 
 HOMEWORKS2020（2021/1/23 〜 2021/1/24 PINEBROOKLYN）で展示した「顔工場」のプログラムです。
 
-[当日資料.md](当日資料.md)
+[当日資料.md](当日資料.md)<br><br>
+
+
+![動いている様子]( https://img.youtube.com/vi/4Waat2NeyN0/maxresdefault.jpg)
+<br>
+https://youtu.be/4Waat2NeyN0
 
 ## 環境構築
 
