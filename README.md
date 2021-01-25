@@ -6,7 +6,7 @@ HOMEWORKS2020（2021/1/23 〜 2021/1/24 PINEBROOKLYN）で展示した「顔工�
 [当日資料.md](当日資料.md)<br><br>
 
 
-![動いている様子]( https://img.youtube.com/vi/4Waat2NeyN0/maxresdefault.jpg)
+[![動いている様子]( https://img.youtube.com/vi/4Waat2NeyN0/maxresdefault.jpg)](https://youtu.be/4Waat2NeyN0)
 <br>
 https://youtu.be/4Waat2NeyN0
 
